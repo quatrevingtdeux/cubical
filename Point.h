@@ -5,11 +5,13 @@ template <int k, class T>
 class Point
 {
 	public:
-		Point();
-		setCoordonnees();
+		Point<k,T>();
+		void setCoordonnees();
+		int getDimension();
 		
 	private:
-		std::vector<T> coordonnees; //TODO taille k
+		T coordonnees[k];
+		//std::valarray<T> coordonnees;
 };
 
 #endif
