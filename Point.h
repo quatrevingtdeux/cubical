@@ -8,6 +8,7 @@ template <int k, typename T>
 class Point
 {
 	public:
+<<<<<<< HEAD
 		Point();
 		~Point() {}
 		int getDimension();
@@ -46,3 +47,15 @@ int PointTest()
 	std::cout << "p[0]=" << p[0] << std::endl;
 	return 0;
 }
+=======
+		Point<k,T>();
+		void setCoordonnees();
+		int getDimension();
+		
+	private:
+		T coordonnees[k];
+		//std::valarray<T> coordonnees;
+};
+
+#endif
+>>>>>>> 51acd9bccd53f04ffd4e452bb500078375234f17

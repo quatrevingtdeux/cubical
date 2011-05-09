@@ -1,6 +1,8 @@
 #ifndef COMPLEXECUBIQUE_H
 #define COMPLEXECUBIQUE_H
 
+#include "Cellule.h"
+
 template<int n, int k, class T>
 class ComplexeCubique
 {
