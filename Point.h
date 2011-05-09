@@ -1,10 +1,6 @@
 #ifndef POINT_H
 #define POINT_H
 
-<<<<<<< Updated upstream
-class Point
-{
-=======
 #include <iostream>
 #include <assert.h>
 
@@ -19,7 +15,6 @@ class Point
 		
 	private:
 		T coordonnees[k];
->>>>>>> Stashed changes
 };
 
 template <int k, typename T>
