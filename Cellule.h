@@ -2,15 +2,19 @@
 #define CELLULE_H
 
 #include <iostream>
-
 #include "Point.h"
 
+class VirtualCellule
+{
+};
+
 template<int i, int k, typename T>
-class Cellule
+class Cellule : virtual VirtualCellule
 {
 	public:
 		Cellule();
 		~Cellule();
+		Cellule<i-1,k,T>** getBord();
 		
 	private:
 		Cellule<i-1,k,T>* bord[2*i];
@@ -18,7 +22,7 @@ class Cellule
 
 
 template<int k, typename T>
-class Cellule<0, k, T>
+class Cellule<0,k,T> : virtual VirtualCellule
 {
 	public:
 		Cellule() : sommet(new Point<k,T>()) {
@@ -28,7 +32,6 @@ class Cellule<0, k, T>
 	private:
 		Point<k,T>* sommet;
 };
-
 
 template<int i, int k, typename T>
 Cellule<i,k,T>::Cellule()
@@ -45,6 +48,12 @@ Cellule<i,k,T>::~Cellule()
 		delete bord[j];
 }
 
+template<int i, int k, typename T>
+Cellule<i-1,k,T>** Cellule<i,k,T>::getBord()
+{
+	return bord;
+}
+
 template<int k, typename T>
 Cellule<0,k,T>::~Cellule()
 {
@@ -52,4 +61,3 @@ Cellule<0,k,T>::~Cellule()
 }
 
 #endif
-
