@@ -2,6 +2,7 @@
 #define COMPLEXECUBIQUE_H
 
 #include <set>
+#include <stdarg.h>
 #include "Cellule.h"
 
 template<int n, int k, class T>
@@ -13,10 +14,10 @@ class ComplexeCubique
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator trouverCellule(VirtualCellule* cellule);
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator trouverIPlus1Cellule(VirtualCellule* cellule);
 		bool estDansBord(VirtualCellule* c1, VirtualCellule* c2);
-		/*void creeBord(VirtualCellule*, 2i pointeurs);
-		Cellule* creerCellule(Point);
-		void detruire(VirtualCellule *);
-		void reduction(VirtualCellule*, Cellule*);*/
+		template<int i> void creeBord(Cellule<i,k,T>* cellule, ...);
+		void creerCellule(Point<k,T> point);
+		void detruire(VirtualCellule* cellule);
+		//void reduction(VirtualCellule* c1, VirtualCellule* c2);
 	private:
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater> ensemblesCellules;
 };
@@ -88,6 +89,42 @@ bool ComplexeCubique<n,k,T>::estDansBord(VirtualCellule* c1, VirtualCellule* c2)
 			return true;
 	}
 	return false;
+}
+
+template<int n, int k, class T>
+template<int i>
+void ComplexeCubique<n,k,T>::creeBord(Cellule<i,k,T>* cellule, ...)
+{
+	va_list pa;
+	va_start(pa, cellule);
+	for(int j = 0; j < i-1; j++)
+	{
+		cellule.getBord()[j] = va_arg(pa, VirtualCellule*);
+		std::cout << "Lecture d'un bord" << std::endl;
+	}
+ 	va_end(pa);
+}
+
+template<int n, int k, class T>
+void ComplexeCubique<n,k,T>::creerCellule(Point<k,T> point)
+{
+	Cellule<0,k,T> cellule(point);
+	ensemblesCellules.insert(cellule);
+}
+
+template<int n, int k, class T>
+void ComplexeCubique<n,k,T>::detruire(VirtualCellule* cellule)
+{
+	std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it = ensemblesCellules.find(cellule);
+	for(it; it != ensemblesCellules.end(); it++)
+	{
+		if(*it == cellule)
+		{
+			ensemblesCellules.erase(it);
+			break;
+		}
+	}
+	//TODO vérifier validité du complexe en mode debug
 }
 
 #endif

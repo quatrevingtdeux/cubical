@@ -39,7 +39,7 @@ template<int k, typename T>
 class Cellule<0,k,T> : virtual VirtualCellule
 {
 	public:
-		Cellule() : sommet(new Point<k,T>()) {
+		Cellule(Point<k,T> point) : sommet(point) {
 	std::cout << "Création 0-Cellule" << std::endl;}
 		~Cellule();
 		VirtualCellule** getBord();
