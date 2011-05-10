@@ -9,6 +9,7 @@ class Point
 {
 	public:
 		Point();
+		Point(T coord[k]);
 		~Point() {}
 		int getDimension();
 		T& operator[](int i);
@@ -21,6 +22,14 @@ template <int k, typename T>
 Point<k,T>::Point()
 {
 	assert(k > 0);
+}
+
+template <int k, typename T>
+Point<k,T>::Point(T coord[k])
+{
+	assert(k > 0);
+	for(int i = 0; i < k; i++)
+		coordonnees[i] = coord[i]; 
 }
 
 template <int k, typename T>
@@ -37,12 +46,3 @@ T& Point<k,T>::operator[](int i)
 }
 
 #endif
-
-int PointTest()
-{
-	Point<5,int> p;
-	std::cout << "Dimension=" << p.getDimension() << std::endl;
-	p[0] = 28;
-	std::cout << "p[0]=" << p[0] << std::endl;
-	return 0;
-}
