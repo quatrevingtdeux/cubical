@@ -17,7 +17,7 @@ class ComplexeCubique
 		template<int i> void creeBord(Cellule<i,k,T>* cellule, ...);
 		void creerCellule(Point<k,T> point);
 		void detruire(VirtualCellule* cellule);
-		//void reduction(VirtualCellule* c1, VirtualCellule* c2);
+		template<int i> bool reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2);
 	private:
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater> ensemblesCellules;
 };
@@ -124,6 +124,56 @@ void ComplexeCubique<n,k,T>::detruire(VirtualCellule* cellule)
 			break;
 		}
 	}
+	//TODO vérifier validité du complexe en mode debug
+}
+
+template<int n, int k, class T>
+template<int i>
+bool ComplexeCubique<n,k,T>::reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2)
+{
+	// c1 soit dans le bord de c2 ;
+	bool valide = false;
+	for(int j = 0; j < 2*(i+1); j++)
+	{
+		if(c2->getBord()[j] == c1)
+		{
+			valide = true;
+			break;
+		}
+	}
+	
+	if(!valide)
+		return false;
+	
+	// Il n’existe pas de (i + 1)-cellule (à part c2) ayant c1 dans son bord
+	Cellule<i+1,k,T> bidon;
+	std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it = ensemblesCellules.find(bidon);
+	for(it; it != ensemblesCellules.end() && (*it)->getDimension() == i+1; it++)
+	{
+		for(int j = 0; j < 2*(i+1); j++)
+		{
+			if((*it)->getBord()[j] == c1 && *it != c2)
+			{
+				return false;
+			}
+		}
+	}
+	
+	// Il n’existe pas de (i + 2)-cellule ayant c2 dans son bord
+	Cellule<i+2,k,T> bidon2;
+	it = ensemblesCellules.find(bidon2);
+	for(it; it != ensemblesCellules.end() && (*it)->getDimension() == i+2; it++)
+	{
+		for(int j = 0; j < 2*(i+2); j++)
+		{
+			if((*it)->getBord()[j] == c2)
+			{
+				return false;
+			}
+		}
+	}
+	
+	return true;
 	//TODO vérifier validité du complexe en mode debug
 }
 
