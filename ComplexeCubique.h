@@ -4,6 +4,7 @@
 #include <set>
 #include <stdarg.h>
 #include "Cellule.h"
+#include "Conteneur.h"
 
 template<int n, int k, class T>
 class ComplexeCubique
@@ -19,6 +20,7 @@ class ComplexeCubique
 		void detruire(VirtualCellule* cellule);
 		template<int i> bool reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2);
 	private:
+		//Conteneur<Cellule<n>* > conteneur;
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater> ensemblesCellules;
 };
 
