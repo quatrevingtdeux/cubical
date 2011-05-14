@@ -7,9 +7,11 @@
 class VirtualCellule
 {
 	public:
-		virtual VirtualCellule** getBord();
-		virtual bool estValide();
-		virtual int getDimension();
+
+                virtual ~VirtualCellule() {}
+                virtual VirtualCellule** getBord() = 0;
+                virtual bool estValide() = 0;
+                virtual int getDimension() = 0;
 		
 		struct PointerCelluleGreater
 		{
@@ -21,7 +23,7 @@ class VirtualCellule
 };
 
 template<int i, int k, typename T>
-class Cellule : virtual VirtualCellule
+class Cellule : public VirtualCellule
 {
 	public:
 		Cellule();
@@ -34,13 +36,12 @@ class Cellule : virtual VirtualCellule
 		Cellule<i-1,k,T>* bord[2*i];
 };
 
-
 template<int k, typename T>
-class Cellule<0,k,T> : virtual VirtualCellule
+class Cellule<0,k,T> : public VirtualCellule
 {
 	public:
-		Cellule(Point<k,T> point) : sommet(point) {
-	std::cout << "Création 0-Cellule" << std::endl;}
+                Cellule() : VirtualCellule() { std::cout << "FAIL" << std::endl; }
+                Cellule(Point<k,T>* point) : VirtualCellule(), sommet(point) { std::cout << "Création 0-Cellule" << std::endl; }
 		~Cellule();
 		VirtualCellule** getBord();
 		bool estValide();
@@ -51,11 +52,14 @@ class Cellule<0,k,T> : virtual VirtualCellule
 };
 
 template<int i, int k, typename T>
-Cellule<i,k,T>::Cellule()
+Cellule<i,k,T>::Cellule(): VirtualCellule()
 {
 	std::cout << "Création " << i << "-Cellule" << std::endl;
 	for(int j = 0; j < 2*i; j++)
+        {
 		bord[j] = new Cellule<i-1,k,T>();
+                std::cout << "Taille=" << i-1 << std::endl;
+        }
 }
 
 template<int i, int k, typename T>

@@ -4,29 +4,38 @@
 #include <set>
 #include <stdarg.h>
 #include "Cellule.h"
-#include "Conteneur.h"
 
 template<int n, int k, class T>
 class ComplexeCubique
 {
 	public:
 		ComplexeCubique();
+                ~ComplexeCubique();
 		bool estValide();
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator trouverCellule(VirtualCellule* cellule);
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator trouverIPlus1Cellule(VirtualCellule* cellule);
 		bool estDansBord(VirtualCellule* c1, VirtualCellule* c2);
-		template<int i> void creeBord(Cellule<i,k,T>* cellule, ...);
-		void creerCellule(Point<k,T> point);
+                template<int i> void creerCellule(Cellule<i,k,T>* cellule, ...);
+                void creerCellule(Point<k,T>* point);
 		void detruire(VirtualCellule* cellule);
 		template<int i> bool reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2);
 	private:
-		//Conteneur<Cellule<n>* > conteneur;
 		std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater> ensemblesCellules;
 };
 
 template<int n, int k, class T>
 ComplexeCubique<n,k,T>::ComplexeCubique()
 {
+}
+
+template<int n, int k, class T>
+ComplexeCubique<n,k,T>::~ComplexeCubique()
+{
+    std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it = ensemblesCellules.begin();
+    for(it; it != ensemblesCellules.end(); it++)
+    {
+        delete *it;
+    }
 }
 
 template<int n, int k, class T>
@@ -95,7 +104,7 @@ bool ComplexeCubique<n,k,T>::estDansBord(VirtualCellule* c1, VirtualCellule* c2)
 
 template<int n, int k, class T>
 template<int i>
-void ComplexeCubique<n,k,T>::creeBord(Cellule<i,k,T>* cellule, ...)
+void ComplexeCubique<n,k,T>::creerCellule(Cellule<i,k,T>* cellule, ...)
 {
 	va_list pa;
 	va_start(pa, cellule);
@@ -108,10 +117,10 @@ void ComplexeCubique<n,k,T>::creeBord(Cellule<i,k,T>* cellule, ...)
 }
 
 template<int n, int k, class T>
-void ComplexeCubique<n,k,T>::creerCellule(Point<k,T> point)
+void ComplexeCubique<n,k,T>::creerCellule(Point<k,T>* point)
 {
-	Cellule<0,k,T> cellule(point);
-	ensemblesCellules.insert(cellule);
+        Cellule<0,k,T>* cellule = new Cellule<0,k,T>(point);
+        ensemblesCellules.insert(cellule);
 }
 
 template<int n, int k, class T>
