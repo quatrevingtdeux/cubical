@@ -31,11 +31,14 @@ ComplexeCubique<n,k,T>::ComplexeCubique()
 template<int n, int k, class T>
 ComplexeCubique<n,k,T>::~ComplexeCubique()
 {
+	/*
     std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it = ensemblesCellules.begin();
     for(it; it != ensemblesCellules.end(); it++)
     {
         delete *it;
     }
+    */
+	ensemblesCellules.clear();
 }
 
 template<int n, int k, class T>
