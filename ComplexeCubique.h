@@ -15,7 +15,7 @@ class ComplexeCubique
                 VirtualCellule* trouverCellule(VirtualCellule* cellule);
                 VirtualCellule* trouverIPlus1Cellule(VirtualCellule* cellule);
 		bool estDansBord(VirtualCellule* c1, VirtualCellule* c2);
-                template<int i> void creerCellule(Cellule<i,k,T>* cellule, ...);
+                template<int i> void creerCellule(Cellule<i>* cellule, ...);
                 void creerCellule(Point<k,T>* point);
 		void detruire(VirtualCellule* cellule);
 		template<int i> bool reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2);
