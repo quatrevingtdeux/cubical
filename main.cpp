@@ -3,7 +3,8 @@
 #include <sstream>
 #include <string>
 #include <stdlib.h>
-#include "ComplexeCubique.h"
+//#include "ComplexeCubique.h"
+#include "Cellule.h"
 
 //#include "testPoint.cpp"
 
@@ -19,6 +20,44 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+    /*
+    //Test de Point
+    vector<int> tab;
+    tab.push_back(10);
+    tab.push_back(14);
+    tab.push_back(2);
+    Point<3,int> point(tab);
+    point[1] = 28;
+    cout << point << endl;
+    tab.~vector();
+    */
+
+    //Test de Cellule
+    //ComplexeCubique<3,3,int> complexe;
+    //complexe.creerCellule(new Point<3,int>());
+    vector<Cellule<0>* > vec;
+    vec.push_back(new Cellule<0>());
+    vec.push_back(new Cellule<0>());
+    Cellule<1> c3(vec);
+    //(cellule.getBord())[1]->getPoint()[1] = 666;
+    c3.~Cellule();
+
+
+    //(cellule.getBord()[0])->getSommet()[0] = 999;
+    //cout << point << endl;
+    //cellule.~Cellule();
+    /*if(complexe.trouverCellule(&cellule) != NULL)
+        cout << "Found" << endl;
+    else
+        cout << "Not found" << endl;*/
+    //complexe.~ComplexeCubique();
+
+
+
+
+    exit(EXIT_SUCCESS);
+/*
+
         if(argc != 2)
 	{
 		cout << "Usage: " << argv[0] << " " << "descripteur" << endl;
@@ -111,5 +150,5 @@ int main(int argc, char** argv)
 
         }
 
-	exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS);*/
 }

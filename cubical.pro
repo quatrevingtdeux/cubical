@@ -18,6 +18,7 @@ HEADERS  += \
     viewer.h \
     Point.h \
     ComplexeCubique.h \
-    Cellule.h
+    Cellule.h \
+    Conteneur.h
 
 LIBS += -lglut -lqglviewer-qt4
