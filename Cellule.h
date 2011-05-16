@@ -2,113 +2,135 @@
 #define CELLULE_H
 
 #include <iostream>
+#include <vector>
 #include "Point.h"
+
+// ============================================================
+//  Classe virtuelle VirtualCellule
+// ============================================================
 
 class VirtualCellule
 {
-	public:
+    public:
+        virtual ~VirtualCellule();
+        int getDimension() const;
+        friend std::ostream& operator<<(std::ostream& sortie, const VirtualCellule& cellule);
+    protected:
+        std::vector<VirtualCellule*> bord;
 
-                virtual ~VirtualCellule() {}
-                virtual VirtualCellule** getBord() = 0;
-                virtual bool estValide() = 0;
-                virtual int getDimension() = 0;
-		
-		struct PointerCelluleGreater
-		{
-			bool operator()(VirtualCellule* c1, VirtualCellule* c2)
-			{
-				return c1->getDimension() > c2->getDimension();
-			}
-		};
+    struct PointerCelluleGreater
+    {
+        bool operator()(VirtualCellule* c1, VirtualCellule* c2)
+        {
+                return c1->getDimension() > c2->getDimension();
+        }
+    };
 };
+
+int VirtualCellule::getDimension() const
+{
+    return bord.size() / 2;
+}
+
+std::ostream& operator<<(std::ostream& sortie, const VirtualCellule& cellule)
+{
+    sortie << "Cellule :" << std::endl;
+    sortie << "\tDimension = " << cellule.getDimension() << std::endl;
+    sortie << "\tAdresse = " << &cellule << std::endl;
+    return sortie;
+}
+
+VirtualCellule::~VirtualCellule()
+{
+    std::cout << "VirtualCellule::~VirtualCellule()" << std::endl;
+    for(unsigned int i=0; i < bord.size(); i++)
+    {
+        delete bord[i];
+    }
+}
+
+// ============================================================
+//  Classe fille Cellule (taille > 0)
+// ============================================================
 
 template<int i, int k, typename T>
 class Cellule : public VirtualCellule
 {
-	public:
-		Cellule();
-		~Cellule();
-		VirtualCellule** getBord();
-		bool estValide();
-		int getDimension();
-		
-	private:
-		Cellule<i-1,k,T>* bord[2*i];
-};
-
-template<int k, typename T>
-class Cellule<0,k,T> : public VirtualCellule
-{
-	public:
-                Cellule() : VirtualCellule() { std::cout << "FAIL" << std::endl; }
-                Cellule(Point<k,T>* point) : VirtualCellule(), sommet(point) { std::cout << "Création 0-Cellule" << std::endl; }
-		~Cellule();
-		VirtualCellule** getBord();
-		bool estValide();
-		int getDimension();
-		
-	private:
-		Point<k,T>* sommet;
+    public:
+        Cellule();
+        Cellule(std::vector<Cellule<i-1,k,T>*> cellulesBord);
+        ~Cellule();
+        VirtualCellule& getBord(int indice);
 };
 
 template<int i, int k, typename T>
-Cellule<i,k,T>::Cellule(): VirtualCellule()
+Cellule<i,k,T>::Cellule()
 {
-	std::cout << "Création " << i << "-Cellule" << std::endl;
-	for(int j = 0; j < 2*i; j++)
-        {
-		bord[j] = new Cellule<i-1,k,T>();
-                std::cout << "Taille=" << i-1 << std::endl;
-        }
+    std::cout << "Cellule<i,k,T>::Cellule(): VirtualCellule()" << std::endl;
+    for(int j = 0; j < 2*i; j++)
+    {
+        bord.push_back(new Cellule<i-1,k,T>());
+    }
+}
+
+template<int i, int k, typename T>
+Cellule<i,k,T>::Cellule(std::vector<Cellule<i-1,k,T>* > cellulesBord)
+{
+    std::cout << "Cellule<i,k,T>::Cellule(std::vector<Cellule<i-1,k,T>* > cellulesBord): VirtualCellule()" << std::endl;
+    this->bord = cellulesBord;
 }
 
 template<int i, int k, typename T>
 Cellule<i,k,T>::~Cellule()
 {
-	for(int j = 0; j < 2*i; j++)
-		delete bord[j];
+    std::cout << "Cellule<i,k,T>::~Cellule()" << std::endl;
 }
 
 template<int i, int k, typename T>
-VirtualCellule** Cellule<i,k,T>::getBord()
+VirtualCellule& Cellule<i,k,T>::getBord(int indice)
 {
-	return bord;
+    assert(indice >= 0 && indice < 2*getDimension());
+    return *(bord[indice]);
 }
 
-template<int i, int k, typename T>
-bool Cellule<i,k,T>::estValide()
+// ============================================================
+//  Classe fille Cellule (taille = 0)
+// ============================================================
+template<int k, typename T>
+class Cellule<0,k,T> : public VirtualCellule
 {
-	return true;
+    public:
+        Cellule();
+        Cellule(Point<k,T>& point);
+        ~Cellule();
+        Point<k,T>& getSommet();
+    private:
+        Point<k,T> sommet;
+};
+
+template<int k, typename T>
+Cellule<0,k,T>::Cellule()
+{
+    std::cout << "Cellule<0,k,T>::Cellule(): VirtualCellule()" << std::endl;
 }
 
-template<int i, int k, typename T>
-int Cellule<i,k,T>::getDimension()
+template<int k, typename T>
+Cellule<0,k,T>::Cellule(Point<k,T>& point)
 {
-	return i;
+    sommet = point;
 }
 
 template<int k, typename T>
 Cellule<0,k,T>::~Cellule()
 {
-	delete sommet;
+    std::cout << "Cellule<0,k,T>::~Cellule()" << std::endl;
+    sommet.~Point();
 }
 
 template<int k, typename T>
-VirtualCellule** Cellule<0,k,T>::getBord()
+Point<k,T>& Cellule<0,k,T>::getSommet()
 {
-	return NULL;
-}
-
-template<int k, typename T>
-bool Cellule<0,k,T>::estValide()
-{
-	return true;
-}
-
-template<int k, typename T>
-int Cellule<0,k,T>::getDimension()
-{
-	return 0;
+    return sommet;
 }
 
 #endif

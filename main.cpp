@@ -4,6 +4,7 @@
 #include <string>
 #include <stdlib.h>
 #include "ComplexeCubique.h"
+#include "icell.h"
 
 #define DIMENSION_COMPLEXE 3
 #define DIMENSION_POINTS 3
@@ -15,6 +16,61 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+    //Test de Point
+    vector<int> tab;
+    tab.push_back(10);
+    tab.push_back(14);
+    tab.push_back(2);
+    Point<3,int> point(tab);
+    point[1] = 28;
+    cout << point << endl;
+    tab.~vector();
+
+    //Test de Cellule
+    //ComplexeCubique<3,3,int> complexe;
+    //complexe.creerCellule(new Point<3,int>());
+   /* Point<3,int> point;
+    point[0] = 10;
+    point[1] = 11;
+    point[2] = 12;
+    Cellule<1,3,int> cellule;
+
+    ((VirtualCellule)cellule).getBord();*/
+
+
+    //(cellule.getBord()[0])->getSommet()[0] = 999;
+    //cout << point << endl;
+    cellule.~Cellule();
+    /*if(complexe.trouverCellule(&cellule) != NULL)
+        cout << "Found" << endl;
+    else
+        cout << "Not found" << endl;*/
+    //complexe.~ComplexeCubique();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    exit(EXIT_SUCCESS);
+
+
         if(argc != 2)
 	{
 		cout << "Usage: " << argv[0] << " " << "descripteur" << endl;
