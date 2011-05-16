@@ -20,7 +20,7 @@ class Conteneur : public ConteneurVirtuel
 
     private:
         std::vector<Cellule<k,3, int>* > cellules;
-        Conteneur<k - 1>* suivant;
+        Conteneur<k-1>* suivant;
 };
 
 template <int k>
