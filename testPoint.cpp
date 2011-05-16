@@ -8,9 +8,10 @@ bool testPoint()
 	// ------------------------------------------------------------------------
 	// ------------------------------------------------------------------------
 	// test class Point<k, T>
+	std::cout << "=== Test de la class Point<k,T> ===" << std::endl;
 	
 	// Point()
-	std::cout << "Test de Point()..." << std::endl;
+	std::cout << "Test de Point() et ~Point()..." << std::endl;
 	Point<3, int> test0;
 	Point<2, double>* test = new Point<2, double>();
 	Point<3, int>* test2 = new Point<3, int>();
@@ -31,23 +32,28 @@ bool testPoint()
 	// previsouly tested
 	
 	//int getDimension() const;
+	std::cout << "Test de getDimension()..." << std::endl;
 	if (test0.getDimension() != 3)
 		return false;
 	if (test->getDimension() != 2)
 		return false;
 	test0.~Point();
 	test->~Point();
+	std::cout << "...OK" << std::endl;
 	
 	//T& operator[](int i);
+	std::cout << "Test de operator[]()..." << std::endl;
 	if (test3[2] != 3)
 		return false;	
+	std::cout << "...OK" << std::endl;
 	
 	//template<int _k, typename _T> friend std::ostream& operator<<(std::ostream& sortie, const Point<_k,_T>& point);
-	std::cout << test3;
-	if (test3[2] != 6)
-		return false;	
+	std::cout << "Test de operator<<()..." << std::endl;
+	std::cout << test3 << std::endl;
 	test3.~Point();
+	std::cout << "...OK" << std::endl;
 	
+	std::cout << "=== All tests succeeded ===" << std::endl;
 	return true;
 }
 
