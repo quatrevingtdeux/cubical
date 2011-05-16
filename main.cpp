@@ -15,8 +15,15 @@
 #define NOMBRE_2_CELLULES 1
 
 #include "testPoint.cpp"
+#include "Conteneur.h"
 
 using namespace std;
+
+template<int i>
+void toto(Cellule<i-1>* cellule)
+{
+
+}
 
 int main(int argc, char** argv)
 {
@@ -31,7 +38,7 @@ int main(int argc, char** argv)
     cout << point << endl;
     tab.~vector();
     */
-
+/*
     //Test de Cellule
     //ComplexeCubique<3,3,int> complexe;
     //complexe.creerCellule(new Point<3,int>());
@@ -41,6 +48,21 @@ int main(int argc, char** argv)
     Cellule<1> c3(vec);
     //(cellule.getBord())[1]->getPoint()[1] = 666;
     c3.~Cellule();
+*/
+
+    Conteneur<3> cont;
+    Cellule<2>* aTrouver = new Cellule<2>();
+    Cellule<2>* introuvable = new Cellule<2>();
+    Cellule<1>* cellule  = new Cellule<1>();
+    cont.ajouterCellule(aTrouver);
+    cont.ajouterCellule(cellule);
+    cout << (cont.trouverIPlus1Cellule<2>(cellule) != cont.trouverIPlus1Cellule(introuvable)) << endl;
+    cont.~Conteneur();
+
+
+
+
+
 
 
     //(cellule.getBord()[0])->getSommet()[0] = 999;
