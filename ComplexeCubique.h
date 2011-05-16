@@ -54,8 +54,8 @@ bool ComplexeCubique<n,k,T>::estValide()
                 std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it;
                 for(it = ensemblesCellules.begin(); it != ensemblesCellules.end(); it++)
                 {
-                        if(!(*it)->estValide())
-                                return false;
+                        //if(!(*it)->estValide())
+                         //       return false;
                 }
 		return true;
 	}
@@ -76,17 +76,17 @@ VirtualCellule* ComplexeCubique<n,k,T>::trouverCellule(VirtualCellule* cellule)
 template<int n, int k, class T>
 VirtualCellule* ComplexeCubique<n,k,T>::trouverIPlus1Cellule(VirtualCellule* cellule)
 {
-        //TODO il faudrait sauter encore plus loin dans la liste, pour ne pas parcourir directement les (i+1)-cellules
-        std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it = ensemblesCellules.find(cellule);
+	//TODO il faudrait sauter encore plus loin dans la liste, pour ne pas parcourir directement les (i+1)-cellules
+	std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it = ensemblesCellules.find(cellule);
 	for(it; it != ensemblesCellules.end() && (*it)->getDimension() == cellule->getDimension()+1; it++)
 	{
-                for(int i = 0; i < 2*(cellule->getDimension()+1); i++)
+		for(int i = 0; i < 2*(cellule->getDimension()+1); i++)
 		{
-			if((*it)->getBord()[i] == cellule)
-                                return *it;
+			//if((*it)->getBord()[i] == cellule)
+			//	return *it;
 		}
 	}
-        return NULL;
+	return NULL;
 }
 
 template<int n, int k, class T>
@@ -94,8 +94,8 @@ bool ComplexeCubique<n,k,T>::estDansBord(VirtualCellule* c1, VirtualCellule* c2)
 {
 	for(int i = c2->getDimension(); i < 2*c2->getDimension(); i++)
 	{
-		if(c2->getBord()[i] == c1)
-			return true;
+		//if(c2->getBord()[i] == c1)
+		//	return true;
 	}
 	return false;
 }
@@ -117,7 +117,7 @@ void ComplexeCubique<n,k,T>::creerCellule(Cellule<i,k,T>* cellule, ...)
 template<int n, int k, class T>
 void ComplexeCubique<n,k,T>::creerCellule(Point<k,T>* point)
 {
-        Cellule<0,k,T>* cellule = new Cellule<0,k,T>(point);
+        Cellule<0,k,T>* cellule = new Cellule<0,k,T>(*point);
         ensemblesCellules.insert(cellule);
 }
 
@@ -125,7 +125,7 @@ template<int n, int k, class T>
 void ComplexeCubique<n,k,T>::detruire(VirtualCellule* cellule)
 {
 	std::multiset<VirtualCellule*,VirtualCellule::PointerCelluleGreater>::iterator it = ensemblesCellules.find(cellule);
-	for(it; it != ensemblesCellules.end(); it++)
+	for(; it != ensemblesCellules.end(); it++)
 	{
 		if(*it == cellule)
 		{
@@ -161,10 +161,8 @@ bool ComplexeCubique<n,k,T>::reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2)
 	{
 		for(int j = 0; j < 2*(i+1); j++)
 		{
-			if((*it)->getBord()[j] == c1 && *it != c2)
-			{
-				return false;
-			}
+			//if((*it)->getBord()[j] == c1 && *it != c2)
+			//	return false;
 		}
 	}
 	
@@ -175,10 +173,8 @@ bool ComplexeCubique<n,k,T>::reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2)
 	{
 		for(int j = 0; j < 2*(i+2); j++)
 		{
-			if((*it)->getBord()[j] == c2)
-			{
-				return false;
-			}
+//			if((*it)->getBord()[j] == c2)
+//				return false;
 		}
 	}
 	

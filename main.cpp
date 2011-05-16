@@ -5,11 +5,15 @@
 #include <stdlib.h>
 #include "ComplexeCubique.h"
 
+//#include "testPoint.cpp"
+
 #define DIMENSION_COMPLEXE 3
 #define DIMENSION_POINTS 3
 #define NOMBRE_0_CELLULES 10
 #define NOMBRE_1_CELLULES 10
 #define NOMBRE_2_CELLULES 1
+
+#include "testPoint.cpp"
 
 using namespace std;
 
@@ -22,6 +26,8 @@ int main(int argc, char** argv)
 	}
 	
 	ifstream fichier(argv[1]);
+	
+	testPoint();
 
 	if(fichier)
         {
