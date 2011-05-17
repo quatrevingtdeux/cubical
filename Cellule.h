@@ -34,9 +34,7 @@ template<int i>
 Cellule<i>::Cellule()
 {
     for(int j = 0; j < 2*i; j++)
-    {
         bords.push_back(new Cellule<i-1>());
-    }
 }
 
 template<int i>
@@ -49,9 +47,7 @@ template<int i>
 Cellule<i>::~Cellule()
 {
     for(int j=0; j < 2*i; j++)
-    {
         delete bords[j];
-    }
 }
 
 template<int i>
