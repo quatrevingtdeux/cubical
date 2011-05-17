@@ -5,6 +5,10 @@
 #include <map>
 #include "Cellule.h"
 
+#define DIM_C 3
+#define DIM_P 3
+#define TYPE int
+
 template<int n, int k, typename T>
 class ComplexeCubique
 {

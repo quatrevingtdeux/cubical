@@ -1,8 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <string>
 
@@ -10,15 +10,12 @@
 #include "ParserBoucle.h"
 #include "BoucleParser.h"
 
-#define DIM_P DIMENSION_COMPLEXE
-#define DIM_C DIMENSION_POINTS
-
 class Parser
 {
 	public:
-		Parser(	ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, 
+		Parser( 	ComplexeCubique<DIM_C,DIM_P,TYPE> complexe,
 				char* nomFichier);
-		~Parser();
+		~Parser() {}
 };
 
 Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
@@ -43,22 +40,25 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
 			//fichier.~ifstream();
 			exit(EXIT_FAILURE);
 		}
-		
+
 		std::vector<int> nombreCellules;
 		std::getline(fichier,input);
 		ligne.str(input);
 		// remplissage des nombres maximum de cellules
 		for (int i = 0; !ligne.eof(); ++i)
-		ligne >> nombreCellules[i];
+			ligne >> nombreCellules[i];
 
 		//TODO
-		// on va faire boucler la classe BoucleParse 
+		// on va faire boucler la classe BoucleParse
 		// pour qu'il récupére les cellules à mettre dans complexe
 		// et evitez d'avoir une macro toute moche
-		//BoucleParser<0,DIM_C> cellulei(complexe, fichier);
+			
+		// DIM_C+1 : evite d'avoir du code redondant
+		BoucleParser<0,DIM_C+1> cellulei(complexe, fichier, nombreCellules);
 
 		//fichier.~ifstream();
 	}
 }
 
 #endif
+

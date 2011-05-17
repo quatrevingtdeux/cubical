@@ -1,6 +1,5 @@
-#include <fstream>
+
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <stdlib.h>
 //#include "ComplexeCubique.h"
@@ -16,7 +15,6 @@
 
 #include "ComplexeCubique.h"
 #include "Parser.h"
-#include "Conteneur.h"
 
 using namespace std;
 
