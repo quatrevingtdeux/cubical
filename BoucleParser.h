@@ -1,20 +1,22 @@
-#ifndef PARSERBOUCLE_H
-#define PARSERBOUCLE_H
+#ifndef BOUCLEPARSER_H
+#define BOUCLEPARSER_H
+#include "ComplexeCubique.h"
 
 template <int Start, int End>
-class ParserBoucle
+class BoucleParser
 {
     public:
-        ParserBoucle();
-        ~ParserBoucle() {}
+        BoucleParser(ComplexeCubique complexe);
+        ~BoucleParser() {}
 
 };
 
 template <int Start, int End>
-ParserBoucle<Start,End>::ParserBoucle()
+BoucleParser<Start,End>::BoucleParser()
 {
-
-
+	
+	
+	
 }
 
 

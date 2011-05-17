@@ -5,7 +5,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
 #include "ComplexeCubique.h"
+#include "ParserBoucle.h"
+#include "BoucleParser.h"
 
 class Parser
 {
@@ -14,7 +17,7 @@ class Parser
         ~Parser();
 };
 
-Parser::Parser(std::string nomFichier)
+Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, std::string nomFichier)
 {
     std::ifstream fichier(nomFichier);
 
@@ -36,8 +39,22 @@ Parser::Parser(std::string nomFichier)
             fichier.~ifstream();
             exit(EXIT_FAILURE);
 	   }
+	   
+	   std::vector<int> nombreCellules;
+        getline(fichier,input);
+	   ligne.str(input);
+	   // remplissage des nombres maximum de cellules
+	   for (int i = 0; !ligne.eof; ++i)
+		ligne >> nombreCellules[i];
 
         //TODO
+        // on va faire boucler la classe BoucleParse 
+        // pour qu'il récupére les cellules à mettre dans complexe
+        // et evitez d'avoir une macro toute moche
+		for (int i = 0; i < nombreCellules.size(); ++i)
+		{
+			BoucleParser<1,nombreCellules[i]> cellulei(complexe, fichier);
+		}
 
 
         fichier.~ifstream();

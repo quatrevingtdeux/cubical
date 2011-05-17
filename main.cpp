@@ -28,10 +28,21 @@ void toto(Cellule<i-1>* cellule)
 
 int main(int argc, char** argv)
 {
-	// Test parser
-	ComplexeCubique<3,DIM,TYPE> blabla();
+	if(argc != 2)
+	{
+		cout << "Usage: " << argv[0] << " " << "descripteur" << endl;
+		exit(EXIT_FAILURE);
+	}	
 	
-	Parser ParserFichier(blabla);
+	// Test parser
+	ComplexeCubique<3,DIM,TYPE> cc();
+	
+	Parser ParseFichier(cc, argv[1]); // remplit complexe cubique
+	
+	// view lol
+	
+	ParseFichier.~Parser();
+	cc.~ComplexeCubique();
  	
 	/*
 	//Test de Point
