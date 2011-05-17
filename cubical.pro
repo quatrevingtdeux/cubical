@@ -17,10 +17,10 @@ SOURCES +=\
 HEADERS  += \
     viewer.h \
     Point.h \
-    ComplexeCubique.h \
     Cellule.h \
     Conteneur.h \
     ParserBoucle.h \
-    Parser.h
+    Parser.h \
+    ComplexeCubique.h
 
 LIBS += -lglut -lqglviewer-qt4

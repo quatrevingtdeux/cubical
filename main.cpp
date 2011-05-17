@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <stdlib.h>
-//#include "ComplexeCubique.h"
+#include "ComplexeCubique.h"
 #include "Cellule.h"
 
 //#include "testPoint.cpp"
@@ -13,9 +13,6 @@
 #define NOMBRE_0_CELLULES 10
 #define NOMBRE_1_CELLULES 10
 #define NOMBRE_2_CELLULES 1
-
-#include "testPoint.cpp"
-#include "Conteneur.h"
 
 using namespace std;
 
@@ -50,16 +47,32 @@ int main(int argc, char** argv)
     c3.~Cellule();
 */
 
-    Conteneur<3> cont;
-    Cellule<2>* aTrouver = new Cellule<2>();
-    Cellule<2>* introuvable = new Cellule<2>();
-    Cellule<1>* cellule  = new Cellule<1>();
-    cont.ajouterCellule(aTrouver);
-    cont.ajouterCellule(cellule);
-    cout << (cont.trouverIPlus1Cellule<2>(cellule) != cont.trouverIPlus1Cellule(introuvable)) << endl;
-    cont.~Conteneur();
+    //Conteneur<3> cont;
+
+    Cellule<1>* c1 = new Cellule<1>();
+    Cellule<0>* c0 = (Cellule<0>*) c1->getBords()->at(0);
+
+    ComplexeCubique<3,3,int> comp;
+    //comp.ajouterCellule(c1);
+    comp.ajouterCellule(c0);
 
 
+    comp.~ComplexeCubique();
+
+    //Cellule<1>* cellule  = &((*aTrouver)[0]);
+    //cont.ajouterCellule(aTrouver);
+    //cont.ajouterCellule(cellule);
+    //cont.trouverIPlus1Cellule(aTrouver);
+    //cout << (cont.trouverIPlus1Cellule<2>(cellule) != cont.trouverIPlus1Cellule(introuvable)) << endl;
+    //cont.~Conteneur();
+    //comp.ajouterCellule(c0);
+    //cout << comp.reduction(c0, c1) << endl;
+
+    //Cellule<0>* c2 = comp.creerCellule(*(new Point<3,int>()));
+    //Cellule<0>* c3 = comp.creerCellule(vec);
+    //cout << (comp.trouverIPlus1Cellule(c1) != comp.trouverIPlus1Cellule(NULL)) << endl;
+    //comp.supprimerCellule(c1);
+    //cout << (comp.trouverIPlus1Cellule(c1) != comp.trouverIPlus1Cellule(NULL)) << endl;
 
 
 
