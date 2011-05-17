@@ -25,6 +25,8 @@ class Conteneur : public ConteneurVirtuel
         typename std::vector<Cellule<k>*>::iterator trouverCellule(Cellule<k>* cellule);
         template<int i> typename std::vector<Cellule<i>*>::iterator trouverIPlus1Cellule(Cellule<i-1>* cellule);
         typename std::vector<Cellule<k>*>::iterator trouverIPlus1Cellule(Cellule<k-1>* cellule);
+        template<int i> bool testAppartenance(Cellule<i>* c1, Cellule<i+1>* c2);
+        template<int i> void supprimerCellule(Cellule<i>* cellule);
 
     private:
         std::vector<Cellule<k>*> cellules;
@@ -104,13 +106,7 @@ template<int k>
 template<int i>
 typename std::vector<Cellule<i>*>::iterator Conteneur<k>::trouverCellule(Cellule<i>* cellule)
 {
-    typename std::vector<Cellule<k>*>::iterator it;
-    for(it = cellules.begin(); it != cellules.end(); ++it)
-    {
-        if (*it == cellule)
-            return it;
-    }
-    return suivant->trouverIPlus1Cellule<i>(cellule);
+    return suivant->trouverCellule(cellule);
 }
 
 template<int k>
@@ -141,6 +137,14 @@ typename std::vector<Cellule<k>*>::iterator Conteneur<k>::trouverIPlus1Cellule(C
     }
     std::cout << "FIN FONCTION OK\n";
     return cellules.end();
+}
+
+template<int k>
+template<int i> void Conteneur<k>::supprimerCellule(Cellule<i>* cellule)
+{
+    if(trouverCellule(cellule) != trouverCellule(NULL))
+        delete this->trouverCellule(cellule);
+    //TODO vérifier non-trouverIPlus1Cellule
 }
 
 #endif
