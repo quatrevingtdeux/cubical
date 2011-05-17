@@ -1,98 +1,163 @@
-#ifndef COMPLEXECUBIQUE_H
-#define COMPLEXECUBIQUE_H
+#ifndef ComplexeCubique_H
+#define ComplexeCubique_H
 
-#include <set>
-#include <stdarg.h>
-#include "Conteneur.h"
+#include <vector>
+#include <map>
 #include "Cellule.h"
 
-#define DIMENSION_COMPLEXE 3
-#define DIMENSION_POINTS 3
-
-template<int n, int k, class T>
+template<int n, int k, typename T>
 class ComplexeCubique
 {
-	public:
-		ComplexeCubique();
-                ~ComplexeCubique();
-		bool estValide();
-                template<int i> typename std::vector<Cellule<i>*>::iterator trouverCellule(Cellule<i>* cellule);
-                template<int i> typename std::vector<Cellule<i+1>*>::iterator trouverIPlus1Cellule(Cellule<i>* cellule);
-                template<int i> bool estDansBord(Cellule<i>* c1, Cellule<i>* c2);
-                template<int i> void creerCellule(std::vector<Cellule<i>*>& cellules);
-                void creerCellule(std::vector<Cellule<0>*>& cellules);
-                Cellule<0>* creerCellule(Point<k,T>& point);
-                template<int i> void supprimerCellule(Cellule<i>& cellule);
-                //template<int i> bool reduction(Cellule<i,k,T>* c1, Cellule<i+1,k,T>* c2);
-	private:
-                Conteneur<n> conteneur;
+     public:
+          ComplexeCubique();
+          ~ComplexeCubique();
+
+          bool estValide();
+          void ajouterCellule(CelluleVirtuelle* cellule);
+          void supprimerCellule(CelluleVirtuelle* cellule);
+          std::vector<CelluleVirtuelle*>::iterator touverCellule(CelluleVirtuelle* cellule);
+          std::vector<CelluleVirtuelle*>::iterator trouverIPlus1Cellule(CelluleVirtuelle* cellule);
+          bool reduction(CelluleVirtuelle* c1, CelluleVirtuelle* c2);
+
+     private:
+          std::map<int, std::vector<CelluleVirtuelle*>*> ensemblesCellules;
+
 };
 
-template<int n, int k, class T>
-ComplexeCubique<n,k,T>::ComplexeCubique()
+template<int n, int k, typename T>
+ComplexeCubique<n, k, T>::ComplexeCubique()
 {
+     for(int i=0; i<=n; i++)
+          ensemblesCellules.insert(std::pair<int, std::vector<CelluleVirtuelle*>*>(i, new std::vector<CelluleVirtuelle*>()));
 }
 
-template<int n, int k, class T>
-ComplexeCubique<n,k,T>::~ComplexeCubique()
+template<int n, int k, typename T>
+ComplexeCubique<n, k, T>::~ComplexeCubique()
 {
-    conteneur.~Conteneur();
+     std::map<int, std::vector<CelluleVirtuelle*>*>::iterator itMap;
+     std::vector<CelluleVirtuelle*>::iterator itVec;
+
+     for(itMap = ensemblesCellules.begin(); itMap != ensemblesCellules.end(); ++itMap)
+     {
+          std::vector<CelluleVirtuelle*> vVirtICell = *(itMap->second);
+          for(itVec = vVirtICell.begin(); itVec != vVirtICell.end(); )
+          {
+               delete *itVec;
+               itVec = vVirtICell.erase(itVec);
+          }
+          delete itMap->second;
+     }
+     ensemblesCellules.clear();
 }
 
-template<int n, int k, class T>
-bool ComplexeCubique<n,k,T>::estValide()
+template<int n, int k, typename T>
+bool ComplexeCubique<n, k, T>::estValide()
 {
-    return conteneur.estValide();
+     std::map<int, std::vector<CelluleVirtuelle*>*>::iterator itMap;
+     for(itMap = ensemblesCellules.begin(); itMap != ensemblesCellules.end(); ++itMap)
+     {
+          std::vector<CelluleVirtuelle*> vVirtICell = *(itMap->second);
+          std::vector<CelluleVirtuelle*>::iterator itVect;
+          for(itVect = vVirtICell.begin(); itVect != vVirtICell.end(); ++itVect)
+          {
+               const std::vector<CelluleVirtuelle*>* picBorderCells = (*itVect)->getBords();
+               if(picBorderCells != NULL)
+               {
+                    for(int i = 0; i < picBorderCells->size(); i++)
+                    {
+                         if(picBorderCells->at(i) == NULL)
+                              return false;
+                    }
+               }
+          }
+     }
+     return true;
 }
 
-template<int n, int k, class T>
-template<int i>
-typename std::vector<Cellule<i>*>::iterator ComplexeCubique<n,k,T>::trouverCellule(Cellule<i>* cellule)
+template<int n, int k, typename T>
+void ComplexeCubique<n, k, T>::ajouterCellule(CelluleVirtuelle* cellule)
 {
-    return conteneur.trouverCellule(cellule);
+    assert(cellule->getDimension() <= n);
+    ensemblesCellules[cellule->getDimension()]->push_back(cellule);
 }
 
-template<int n, int k, class T>
-template<int i>
-typename std::vector<Cellule<i+1>*>::iterator ComplexeCubique<n,k,T>::trouverIPlus1Cellule(Cellule<i>* cellule)
+template<int n, int k, typename T>
+void ComplexeCubique<n, k, T>::supprimerCellule(CelluleVirtuelle* cellule)
 {
-    return 0x0;//conteneur.trouverIPlus1Cellule(cellule);
+    if(cellule == NULL)
+        return;
+
+    int dimension = cellule->getDimension();
+    if(dimension < n)
+    {
+        assert(trouverIPlus1Cellule(cellule) == ensemblesCellules[0]->end());
+    }
+
+    std::vector<CelluleVirtuelle*>::iterator it = touverCellule(cellule);
+    delete cellule;
+    ensemblesCellules[dimension]->erase(it);
 }
 
-template<int n, int k, class T>
-template<int i>
-bool ComplexeCubique<n,k,T>::estDansBord(Cellule<i>* c1, Cellule<i>* c2)
+template<int n, int k, typename T>
+std::vector<CelluleVirtuelle*>::iterator ComplexeCubique<n, k, T>::touverCellule(CelluleVirtuelle* cellule)
 {
-    return c2->hasIMoins1Cellule(c1);
+    if(cellule == NULL)
+        return ensemblesCellules[0]->end();
+    int dimension = cellule->getDimension();
+    return find(ensemblesCellules[dimension]->begin(), ensemblesCellules[dimension]->end(), cellule);
 }
 
-template<int n, int k, class T>
-template<int i>
-void ComplexeCubique<n,k,T>::creerCellule(std::vector<Cellule<i>*>& cellules)
+template<int n, int k, typename T>
+std::vector<CelluleVirtuelle*>::iterator ComplexeCubique<n, k, T>::trouverIPlus1Cellule(CelluleVirtuelle* cellule)
 {
-    Cellule<i/2>* cellule = new Cellule<i/2>(cellules);
-    //conteneur.ajouterCellule();
+    if(cellule == NULL || cellule->getDimension() == n)
+        return ensemblesCellules[0]->end();
+
+    int dimension = cellule->getDimension();
+    std::vector<CelluleVirtuelle*>::iterator it;
+    for(it = ensemblesCellules[dimension+1]->begin(); it != ensemblesCellules[dimension+1]->end(); ++it)
+    {
+      if((*it)->hasIMoins1Cellule(cellule))
+           return it;
+    }
+    return ensemblesCellules[0]->end();
 }
 
-template<int n, int k, class T>
-void ComplexeCubique<n,k,T>::creerCellule(std::vector<Cellule<0>*>& cellules)
+template<int n, int k, typename T>
+bool ComplexeCubique<n, k, T>::reduction(CelluleVirtuelle* c1, CelluleVirtuelle* c2)
 {
-    Cellule<1>* cellule = new Cellule<1>(cellules);
-    //conteneur.ajouterCellule();
-}
+    if((c1 == NULL || c2 == NULL) && (c1->getDimension() == c2->getDimension() - 1))
+        return false;
 
-template<int n, int k, class T>
-Cellule<0>* ComplexeCubique<n,k,T>::creerCellule(Point<k,T>& point)
-{
-    Cellule<0>* cellule = new Cellule<0>(point);
-    conteneur.ajouterCellule(cellule);
-    return cellule;
-}
+    //C1 est dans le bord de C2
+    if(!c2->hasIMoins1Cellule(c1))
+            return false;
 
-template<int n, int k, class T>
-template<int i> void ComplexeCubique<n,k,T>::supprimerCellule(Cellule<i>& cellule)
-{
-    conteneur.supprimerCellule(&cellule);
+    //Il n’existe pas de (i + 1)-cellule (à part c2) ayant c1 dans son bord
+    std::vector<CelluleVirtuelle*>::iterator it;
+    int dimension = c1->getDimension() + 1;
+    for(ensemblesCellules[dimension]->begin(); it != ensemblesCellules[dimension]->end(); ++it)
+    {
+        if((*it)->hasIMoins1Cellule(c1) && *it != c2)
+            return false;
+    }
+
+    //Il n’existe pas de (i + 2)-cellule ayant c2 dans son bord
+    dimension = c1->getDimension() + 2;
+    if(n <= c1->getDimension() + 2)
+    {
+        for(ensemblesCellules[dimension]->begin(); it != ensemblesCellules[dimension]->end(); ++it)
+        {
+            if((*it)->hasIMoins1Cellule(c2))
+                return false;
+        }
+    }
+
+    //Suppression des deux cellules
+    supprimerCellule(c1);
+    supprimerCellule(c2);
+
+    return true;
 }
 
 #endif
