@@ -6,7 +6,7 @@
 #include <sstream>
 #include "ComplexeCubique.h"
 
-template <int Start, int Dimension>
+template <int Indice, int Dimension>
 class BoucleParser
 {
 	public:
@@ -17,8 +17,8 @@ class BoucleParser
 		~BoucleParser() {}
 };
 
-template <int Start, int Dimension>
-BoucleParser<Start, Dimension>::BoucleParser(
+template <int Indice, int Dimension>
+BoucleParser<Indice, Dimension>::BoucleParser(
 							ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
 							std::ifstream& fichier,
 							const std::vector<int>& nombreCellules)
@@ -26,26 +26,30 @@ BoucleParser<Start, Dimension>::BoucleParser(
 	// traitement pour l'ajout de chaque ligne du fichier dans le complexe
 	std::string input;
 	std::istringstream ligne;
-	std::vector<int> val;
+	std::vector<int> indiceCellules;
+	std::vector<Cellule<Indice-1>*> cellules;
 	
-	for (int i = 0; i < nombreCellules[Start]; ++i)
+	for (int i = 0; i < nombreCellules[Indice]; ++i)
 	{
 		std::getline(fichier, input);
 		if (input != "")
 		{
 			ligne.str(input);
-			for (int i = 0; i < Start*2; ++i)
-				ligne >> val[i];
+			for (int i = 0; i < Indice*2; ++i)
+				ligne >> indiceCellules[i];
 			
-			//Cellule<Start> nouvelleICellule(val);
+			// trouver les i-1 cellules avec les indices
 			
-			//complexe.ajouterCellule(
-			//	&static_cast<CelluleVirtuelle>(nouvelleICellule));
+			
+			Cellule<Indice>* nouvelleICellule = new Cellule<Indice>();
+			
+			complexe.ajouterCellule(
+				static_cast<CelluleVirtuelle*>(nouvelleICellule));
 		}
 		
 	}
 	
-	BoucleParser<Start+1, Dimension> traiter(complexe, fichier, nombreCellules);
+	BoucleParser<Indice+1, Dimension> traiter(complexe, fichier, nombreCellules);
 }
 
 
@@ -81,12 +85,11 @@ BoucleParser<0, Dimension>::BoucleParser(
 			for (int p = 0; p < DIM_P; ++p)
 				ligne >> val[p];
 			Point<DIM_P, TYPE> nouveauPoint(val);
-			Cellule<0> nouvelle0Cellule(nouveauPoint);
+			Cellule<0>* nouvelle0Cellule = new Cellule<0>(nouveauPoint);
 			
 			complexe.ajouterCellule(
-				&static_cast<CelluleVirtuelle>(nouvelle0Cellule));
+				static_cast<CelluleVirtuelle*>(nouvelle0Cellule));
 		}
-		
 	}
 	
 	BoucleParser<1, Dimension> traiter(complexe, fichier, nombreCellules);
