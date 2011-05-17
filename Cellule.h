@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "Point.h"
 
 #define DIM 3
@@ -20,6 +21,8 @@ class Cellule
         Cellule(std::vector<Cellule<i-1>*>& cellules);
         ~Cellule();
         int getDimension() const;
+        bool estValide() const;
+        bool hasIMoins1Cellule(Cellule<i-1>* cellule) const;
         std::vector<Cellule<i-1>*>& getBords();
         Cellule<i-1>& operator[](int indice);
         template<int _i> friend std::ostream& operator<<(std::ostream& sortie, const Cellule<_i>& cellule);
@@ -58,6 +61,18 @@ int Cellule<i>::getDimension() const
 }
 
 template<int i>
+bool Cellule<i>::estValide() const
+{
+    return bords.size() == 2*i;
+}
+
+template<int i>
+bool Cellule<i>::hasIMoins1Cellule(Cellule<i-1>* cellule) const
+{
+    return std::find(bords.begin(), bords.end(), cellule) != bords.end();
+}
+
+template<int i>
 std::vector<Cellule<i-1>*>& Cellule<i>::getBords()
 {
     return bords;
@@ -91,6 +106,7 @@ class Cellule<0>
         Cellule(Point<DIM,TYPE>& point);
         ~Cellule();
         int getDimension() const;
+        bool estValide() const;
         Point<DIM,TYPE>& getPoint();
         TYPE& operator[](int indice);
         friend std::ostream& operator<<(std::ostream& sortie, const Cellule<0>& cellule);
@@ -115,6 +131,11 @@ Cellule<0>::~Cellule()
 int Cellule<0>::getDimension() const
 {
     return 0;
+}
+
+bool Cellule<0>::estValide() const
+{
+    return true;
 }
 
 Point<DIM,TYPE>& Cellule<0>::getPoint()
