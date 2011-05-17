@@ -22,6 +22,7 @@ class ComplexeCubique
           std::vector<CelluleVirtuelle*>::iterator touverCellule(CelluleVirtuelle* cellule);
           std::vector<CelluleVirtuelle*>::iterator trouverIPlus1Cellule(CelluleVirtuelle* cellule);
           bool reduction(CelluleVirtuelle* c1, CelluleVirtuelle* c2);
+          template<int _n, int _k, typename _T> friend std::ostream& operator<<(std::ostream& sortie, const ComplexeCubique<_n,_k,_T>& complexe);
 
      private:
           std::map<int, std::vector<CelluleVirtuelle*>*> ensemblesCellules;
@@ -162,6 +163,30 @@ bool ComplexeCubique<n, k, T>::reduction(CelluleVirtuelle* c1, CelluleVirtuelle*
     supprimerCellule(c2);
 
     return true;
+}
+
+template<int n, int k, typename T>
+std::ostream& operator<<(std::ostream& sortie, const ComplexeCubique<n,k,T>& complexe)
+{
+    sortie << n << " " << k << std::endl;
+    for(int i=0; i<=n; i++)
+        sortie << complexe.ensemblesCellules.find(i)->second->size() << " ";
+    sortie << std::endl;
+
+    for(int i=0; i<complexe.ensemblesCellules.find(0)->second->size(); i++)
+        sortie << ((Cellule<0>*) complexe.ensemblesCellules.find(0)->second->at(i))->getSommet() << std::endl;
+
+    for(int j=1; j<=n; j++)
+    {
+        for(int i=1; i<complexe.ensemblesCellules.find(j)->second->size(); i++)
+        {
+            CelluleVirtuelle* cellule = complexe.ensemblesCellules.find(j)->second->at(i);
+            for(std::vector<CelluleVirtuelle*>::iterator it = cellule->getBords()->begin(); it != cellule->getBords()->end(); ++it)
+                sortie << std::find(cellule->getBords()->begin(), cellule->getBords()->end(), cellule) - cellule->getBords()->begin() << " ";
+        }
+        sortie << std::endl;
+    }
+    return sortie;
 }
 
 #endif
