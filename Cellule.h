@@ -10,24 +10,63 @@
 #define TYPE int
 
 // ============================================================
-//  Classe fille Cellule (taille > 0)
+// Classe virtuelle CelluleVirtuelle
+// ============================================================
+
+class CelluleVirtuelle
+{
+    public:
+        virtual ~CelluleVirtuelle();
+        int getDimension() const;
+        std::vector<CelluleVirtuelle*>* getBords();
+        bool hasIMoins1Cellule(CelluleVirtuelle* cellule);
+        friend std::ostream& operator<<(std::ostream& sortie, const CelluleVirtuelle& cellule);
+    protected:
+        std::vector<CelluleVirtuelle*> bords;
+};
+
+int CelluleVirtuelle::getDimension() const
+{
+    return bords.size() / 2;
+}
+
+std::vector<CelluleVirtuelle*>* CelluleVirtuelle::getBords()
+{
+    return &bords;
+}
+
+bool CelluleVirtuelle::hasIMoins1Cellule(CelluleVirtuelle* cellule)
+{
+    return find(bords.begin(), bords.end(), cellule) != bords.end();
+}
+
+std::ostream& operator<<(std::ostream& sortie, const CelluleVirtuelle& cellule)
+{
+    sortie << "Cellule :" << std::endl;
+    sortie << "\tDimension = " << cellule.getDimension() << std::endl;
+    sortie << "\tAdresse = " << &cellule << std::endl;
+    return sortie;
+}
+
+CelluleVirtuelle::~CelluleVirtuelle()
+{
+    for(unsigned int i=0; i < bords.size(); i++)
+    {
+        delete bords[i];
+    }
+}
+
+// ============================================================
+// Classe fille Cellule (taille > 0)
 // ============================================================
 
 template<int i>
-class Cellule
+class Cellule : public CelluleVirtuelle
 {
     public:
         Cellule();
-        Cellule(std::vector<Cellule<i-1>*>& cellules);
+        Cellule(std::vector<Cellule<i-1>*> cellulesbords);
         ~Cellule();
-        int getDimension() const;
-        bool estValide() const;
-        bool hasIMoins1Cellule(Cellule<i-1>* cellule) const;
-        std::vector<Cellule<i-1>*>& getBords();
-        Cellule<i-1>& operator[](int indice);
-        template<int _i> friend std::ostream& operator<<(std::ostream& sortie, const Cellule<_i>& cellule);
-    private:
-        std::vector<Cellule<i-1>*> bords;
 };
 
 template<int i>
@@ -40,78 +79,29 @@ Cellule<i>::Cellule()
 }
 
 template<int i>
-Cellule<i>::Cellule(std::vector<Cellule<i-1>*>& cellules)
+Cellule<i>::Cellule(std::vector<Cellule<i-1>* > cellulesbords)
 {
-    bords = cellules;
+    this->bords = cellulesbords;
 }
 
 template<int i>
 Cellule<i>::~Cellule()
 {
-    for(int j=0; j < 2*i; j++)
-    {
-        delete bords[j];
-    }
-}
-
-template<int i>
-int Cellule<i>::getDimension() const
-{
-    return i;
-}
-
-template<int i>
-bool Cellule<i>::estValide() const
-{
-    return bords.size() == 2*i;
-}
-
-template<int i>
-bool Cellule<i>::hasIMoins1Cellule(Cellule<i-1>* cellule) const
-{
-    return std::find(bords.begin(), bords.end(), cellule) != bords.end();
-}
-
-template<int i>
-std::vector<Cellule<i-1>*>& Cellule<i>::getBords()
-{
-    return bords;
-}
-
-template<int i>
-Cellule<i-1>& Cellule<i>::operator[](int indice)
-{
-    assert(indice >= 0 && indice < 2*getDimension());
-    return *bords[indice];
-}
-
-template<int i>
-std::ostream& operator<<(std::ostream& sortie, const Cellule<i>& cellule)
-{
-    sortie << "Cellule :" << std::endl;
-    sortie << "\tDimension = " << cellule.getDimension() << std::endl;
-    sortie << "\tAdresse = " << &cellule << std::endl;
-    return sortie;
 }
 
 // ============================================================
-//  Classe fille Cellule (taille = 0)
+// Classe fille Cellule (taille = 0)
 // ============================================================
-
-template <>
-class Cellule<0>
+template<>
+class Cellule<0> : public CelluleVirtuelle
 {
     public:
         Cellule();
         Cellule(Point<DIM,TYPE>& point);
         ~Cellule();
-        int getDimension() const;
-        bool estValide() const;
-        Point<DIM,TYPE>& getPoint();
-        TYPE& operator[](int indice);
-        friend std::ostream& operator<<(std::ostream& sortie, const Cellule<0>& cellule);
+        Point<DIM,TYPE>& getSommet();
     private:
-        Point<DIM,TYPE> point;
+        Point<DIM,TYPE> sommet;
 };
 
 Cellule<0>::Cellule()
@@ -120,41 +110,17 @@ Cellule<0>::Cellule()
 
 Cellule<0>::Cellule(Point<DIM,TYPE>& point)
 {
-    this->point = point;
+    sommet = point;
 }
 
 Cellule<0>::~Cellule()
 {
-    point.~Point();
+    sommet.~Point();
 }
 
-int Cellule<0>::getDimension() const
+Point<DIM,TYPE>& Cellule<0>::getSommet()
 {
-    return 0;
-}
-
-bool Cellule<0>::estValide() const
-{
-    return true;
-}
-
-Point<DIM,TYPE>& Cellule<0>::getPoint()
-{
-    return point;
-}
-
-TYPE& Cellule<0>::operator[](int indice)
-{
-    return point[indice];
-}
-
-std::ostream& operator<<(std::ostream& sortie, const Cellule<0>& cellule)
-{
-    sortie << "Cellule :" << std::endl;
-    sortie << "\tDimension = " << cellule.getDimension() << std::endl;
-    sortie << "\tAdresse = " << &cellule << std::endl;
-    sortie << "\tContenu {\n " << cellule.point << "}" << std::endl;
-    return sortie;
+    return sommet;
 }
 
 #endif
