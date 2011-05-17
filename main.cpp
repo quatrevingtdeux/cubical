@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	}	
 	
 	// Test parser
-	ComplexeCubique<3,DIM,TYPE> cc();
+	ComplexeCubique<DIM_C,DIM_P,TYPE> cc;
 	
 	Parser ParseFichier(cc, argv[1]); // remplit complexe cubique
 	
@@ -67,14 +67,14 @@ int main(int argc, char** argv)
 	c3.~Cellule();
 	*/
 
-	Conteneur<3> cont;
-	Cellule<2>* aTrouver = new Cellule<2>();
-	Cellule<2>* introuvable = new Cellule<2>();
-	Cellule<1>* cellule  = new Cellule<1>();
-	cont.ajouterCellule(aTrouver);
-	cont.ajouterCellule(cellule);
-	cout << (cont.trouverIPlus1Cellule<2>(cellule) != cont.trouverIPlus1Cellule(introuvable)) << endl;
-	cont.~Conteneur();
+// 	Conteneur<3> cont;
+// 	Cellule<2>* aTrouver = new Cellule<2>();
+// 	Cellule<2>* introuvable = new Cellule<2>();
+// 	Cellule<1>* cellule  = new Cellule<1>();
+// 	cont.ajouterCellule(aTrouver);
+// 	cont.ajouterCellule(cellule);
+// 	cout << (cont.trouverIPlus1Cellule<2>(cellule) != cont.trouverIPlus1Cellule(introuvable)) << endl;
+// 	cont.~Conteneur();
 
 
 

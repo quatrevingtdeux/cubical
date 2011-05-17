@@ -56,7 +56,7 @@ template<int n, int k, class T>
 template<int i>
 typename std::vector<Cellule<i+1>*>::iterator ComplexeCubique<n,k,T>::trouverIPlus1Cellule(Cellule<i>* cellule)
 {
-    return conteneur.trouverIPlus1Cellule(cellule);
+    return 0x0;//conteneur.trouverIPlus1Cellule(cellule);
 }
 
 template<int n, int k, class T>

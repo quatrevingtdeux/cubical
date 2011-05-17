@@ -15,22 +15,24 @@ class ConteneurVirtuel
 template<int k>
 class Conteneur : public ConteneurVirtuel
 {
-    public:
-        Conteneur();
-        ~Conteneur();
-        bool estValide();
-        template<int i> void ajouterCellule(Cellule<i>* cellule);
-        void ajouterCellule(Cellule<k>* cellule);
-        template<int i> typename std::vector<Cellule<i>*>::iterator trouverCellule(Cellule<i>* cellule);
-        typename std::vector<Cellule<k>*>::iterator trouverCellule(Cellule<k>* cellule);
-        template<int i> typename std::vector<Cellule<i>*>::iterator trouverIPlus1Cellule(Cellule<i-1>* cellule);
-        typename std::vector<Cellule<k>*>::iterator trouverIPlus1Cellule(Cellule<k-1>* cellule);
-        template<int i> bool testAppartenance(Cellule<i>* c1, Cellule<i+1>* c2);
-        template<int i> void supprimerCellule(Cellule<i>* cellule);
+	public:
+		Conteneur();
+		~Conteneur();
+		bool estValide();
+		template<int i> void ajouterCellule(Cellule<i>* cellule);
+		void ajouterCellule(Cellule<k>* cellule);
+		template<int i> typename std::vector<Cellule<i>*>::iterator trouverCellule(Cellule<i>* cellule);
+		typename std::vector<Cellule<k>*>::iterator trouverCellule(Cellule<k>* cellule);
+// 		template<int i> typename std::vector<Cellule<i>*>::iterator 
+// 			trouverIPlus1Cellule(Cellule<i-1>* cellule);
+// 		typename std::vector<Cellule<k>*>::iterator 
+// 			trouverIPlus1Cellule(Cellule<k-1>* cellule);
+		template<int i> bool testAppartenance(Cellule<i>* c1, Cellule<i+1>* c2);
+		template<int i> void supprimerCellule(Cellule<i>* cellule);
 
-    private:
-        std::vector<Cellule<k>*> cellules;
-        Conteneur<k-1>* suivant;
+	private:
+		std::vector<Cellule<k>*> cellules;
+		Conteneur<k-1>* suivant;
 };
 
 template<int k>
@@ -115,29 +117,29 @@ typename std::vector<Cellule<k>*>::iterator Conteneur<k>::trouverCellule(Cellule
     return std::find(cellules.begin(), cellules.end(), cellule);
 }
 
-template<int k>
-template<int i>
-typename std::vector<Cellule<i>*>::iterator Conteneur<k>::trouverIPlus1Cellule(Cellule<i-1>* cellule)
-{
-    return suivant->trouverIPlus1Cellule<i-1>(cellule);
-}
-
-template<int k>
-typename std::vector<Cellule<k>*>::iterator Conteneur<k>::trouverIPlus1Cellule(Cellule<k-1>* cellule)
-{
-    typename std::vector<Cellule<k>*>::iterator it;
-    for(it = cellules.begin(); it != cellules.end(); ++it)
-    {
-        std::cout << "BOUCLE\n";
-        if ((*it)->hasIMoins1Cellule(cellule))
-        {
-            std::cout << "GAGNE\n";
-            return it;
-        }
-    }
-    std::cout << "FIN FONCTION OK\n";
-    return cellules.end();
-}
+// template<int k>
+// template<int i>
+// typename std::vector<Cellule<i>*>::iterator Conteneur<k>::trouverIPlus1Cellule(Cellule<i-1>* cellule)
+// {
+//     return suivant->trouverIPlus1Cellule<i-1>(cellule);
+// }
+// 
+// template<int k>
+// typename std::vector<Cellule<k>*>::iterator Conteneur<k>::trouverIPlus1Cellule(Cellule<k-1>* cellule)
+// {
+//     typename std::vector<Cellule<k>*>::iterator it;
+//     for(it = cellules.begin(); it != cellules.end(); ++it)
+//     {
+//         std::cout << "BOUCLE\n";
+//         if ((*it)->hasIMoins1Cellule(cellule))
+//         {
+//             std::cout << "GAGNE\n";
+//             return it;
+//         }
+//     }
+//     std::cout << "FIN FONCTION OK\n";
+//     return cellules.end();
+// }
 
 template<int k>
 template<int i> void Conteneur<k>::supprimerCellule(Cellule<i>* cellule)
