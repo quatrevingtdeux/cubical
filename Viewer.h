@@ -185,7 +185,9 @@ void Viewer<n, k, T>::draw_square(double x, double y, double z, double lg, int d
      double p = lg / 2;
      glPushMatrix();
      glTranslatef(x, y, z);
+     
 
+     
      if (dir1 == X && dir2 == Z)
           glRotatef(90, 1, 0, 0);
      else if (dir1 == Y && dir2 == Z)
@@ -275,26 +277,39 @@ void Viewer<n, k, T>::draw0Cell(Cellule<0>* cellule)
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw1Cell(Cellule<1>* cellule)
 {
-     // On peut par exemple choisir de dessiner chaque 1-cellule par un cylindre.
-     std::vector<CelluleVirtuelle*>* edges = cellule->getBords();
+	// On peut par exemple choisir de dessiner chaque 1-cellule par un cylindre.
+	std::vector<CelluleVirtuelle*>* edges = cellule->getBords();
 
-     assert(edges->size() == 2);
+	assert(edges->size() == 2);
 
-     Cellule<0>* c1 = static_cast<Cellule<0>*>((*edges)[0]);
-     Cellule<0>* c2 = static_cast<Cellule<0>*>((*edges)[1]);
-     Point<k,T> *p1 = &c1->getSommet();
-     Point<k,T> *p2 = &c2->getSommet();
-     double lg = sqrt(
-                    pow(((*p2)[0] - (*p1)[0]), 2)
-                    + pow(((*p2)[1] - (*p1)[1]), 2)
-                    + pow(((*p2)[2] - (*p1)[2]), 2)
-                 );
-     if ((*p2)[0] - (*p1)[0] == 0)
-        draw_cylinder((*p1)[0], (*p1)[1], (*p1)[2], lg/2, .08, Y);
-     else if ((*p2)[1] - (*p1)[1] == 0)
-        draw_cylinder((*p1)[0], (*p1)[1], (*p1)[2], lg/2, .08, X);
-     else
-        draw_cylinder((*p1)[0], (*p1)[1], (*p1)[2], lg/2, .08, Z);
+	Cellule<0>* c1 = static_cast<Cellule<0>*>((*edges)[0]);
+	Cellule<0>* c2 = static_cast<Cellule<0>*>((*edges)[1]);
+	Point<k,T> *p1 = &c1->getSommet();
+	Point<k,T> *p2 = &c2->getSommet();
+	double lg = sqrt(
+			pow(((*p2)[0] - (*p1)[0]), 2)
+			+ pow(((*p2)[1] - (*p1)[1]), 2)
+			+ pow(((*p2)[2] - (*p1)[2]), 2)
+			);
+	
+	if ((*p2)[0] - (*p1)[0] == 0)
+	{
+		
+		draw_cylinder((double)((*p2)[0] + (*p1)[0]) /2,
+			      (double)((*p2)[1])-lg/2,
+			      (*p2)[2],
+			      lg, .08, Y);
+	}
+	else if ((*p2)[1] - (*p1)[1] == 0)
+	{
+		draw_cylinder((double)(*p1)[0]+lg/2,
+			      (double)((*p1)[1]) ,
+			      (*p1)[2],
+			      lg, .08, X);
+		draw_sphere((*p1)[0], (*p1)[1], (*p1)[2], .3);
+	}
+	else
+		draw_cylinder((*p1)[0], (*p1)[1], (*p1)[2], lg/2, .08, Z);
 }
 
 template <int n, int k, typename T>
@@ -323,14 +338,34 @@ void Viewer<n, k, T>::draw2Cell(Cellule<2>* cellule)
      Point<k,T> *p2 = &c2->getSommet();
      Point<k,T> *p3 = &c3->getSommet();
 
-     double lg = sqrt(pow(((*p2)[0] - (*p1)[0]), 2) + pow(((*p2)[1] - (*p1)[1]), 2) + pow(((*p2)[2] - (*p1)[2]), 2));
+	double lg = sqrt(pow(((*p2)[0] - (*p1)[0]), 2) + pow(((*p2)[1] - (*p1)[1]), 2) + pow(((*p2)[2] - (*p1)[2]), 2));
 
-     if ((*p1)[1] == (*p2)[1] && (*p1)[1] == (*p3)[1]) // les y sont similaires donc on rotate selon x
-          draw_square((*p1)[0], (*p1)[1], (*p1)[2], lg, 0, 2);
-     else if ((*p1)[0] == (*p2)[0] && (*p1)[0] == (*p3)[0]) // les x sont similaires donc on rotate selon y
-          draw_square((*p1)[0], (*p1)[1], (*p1)[2], lg, 1, 2);
-     else
-          draw_square((*p1)[0], (*p1)[1], (*p1)[2], lg, 0, 1);
+	if ((*p1)[1] == (*p2)[1] && (*p1)[1] == (*p3)[1]) // les y sont similaires donc on rotate selon x
+	{
+		draw_square(
+				(double)((*p1)[0]+(*p2)[0])/2,
+				(double)((*p1)[1]+(*p2)[1])/2+lg/2,
+				(double)((*p1)[2]+(*p2)[2])/2, 
+				lg, X, Y);
+	}
+	else if ((*p1)[0] == (*p2)[0] && (*p1)[0] == (*p3)[0]) // les x sont similaires donc on rotate selon y
+	{
+		draw_square(
+				(double)((*p1)[0]+(*p2)[0])/2+lg/2,
+				(double)((*p1)[1]+(*p2)[1])/2,
+				(double)((*p1)[2]+(*p2)[2])/2, 
+				lg, X, Z);
+		//draw_square((*p1)[0], (*p1)[1], (*p1)[2], lg, Y, Z);
+	}
+	else
+	{
+		draw_square(
+				(double)((*p1)[0]+(*p2)[0])/2,
+				(double)((*p1)[1]+(*p2)[1])/2,
+				(double)((*p1)[2]+(*p2)[2])/2+lg/2, 
+				lg, Y, Z);
+		//draw_square((*p1)[0], (*p1)[1], (*p1)[2], lg, X, Y);
+	}
 }
 
 template <int n, int k, typename T>
