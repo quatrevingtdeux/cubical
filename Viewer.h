@@ -13,47 +13,6 @@
 template <int n, int k, typename T>
 class Viewer;
 
-/***************************************************************
- *
- **************************************************************/
-/*
-template <int Start, int End>
-class ViewLoop
-{
-     public:
-          template <int n, int k, typename T>
-          static void loop(Viewer<n, k, T> *v, ComplexeCubique<n, k, T> *cc)
-          {
-               ContainerPtr *ptr = cc->cells();
-
-               for (unsigned int i = 0; i < End - Start; i++)
-                    ptr = ptr->GetNext();
-
-               std::vector<Cellule<Start> *> &cells = static_cast<Container<Start> *>(ptr)->GetCells();
-               typename std::vector<Cellule<Start> *>::iterator it;
-               for (it = cells.begin(); it != cells.end(); ++it)
-                    v->template drawCellule<Start>(*it);
-
-               ViewLoop<Start + 1, End>::template loop<n, k, T>(v, cc);
-          }
-};
-
-template <int End>
-class ViewLoop<End, End>
-{
-     public:
-          template <int n, int k, typename T>
-          static void loop(Viewer<n, k, T> *v, ComplexeCubique<n, k, T> *cc)
-          {
-               ContainerPtr *ptr = cc->cells();
-
-               std::vector<Cellule<End> *> &cells = static_cast<Container<End> *>(ptr)->GetCells();
-               typename std::vector<Cellule<End> *>::iterator it;
-               for (it = cells.begin(); it != cells.end(); ++it)
-                    v->template drawCellule<End>(*it);
-          }
-};*/
-
 enum { X, Y, Z };
 
 /***************************************************************
@@ -294,7 +253,6 @@ void Viewer<n, k, T>::draw1Cell(Cellule<1>* cellule)
 	
 	if ((*p2)[0] - (*p1)[0] == 0)
 	{
-		
 		draw_cylinder((double)((*p2)[0] + (*p1)[0]) /2,
 			      (double)((*p2)[1])-lg/2,
 			      (*p2)[2],

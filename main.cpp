@@ -14,23 +14,23 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    ComplexeCubique<DIM_C,DIM_P,TYPE> complexe;
-    if (argc == 2)
-    {
-        Parser parseCeFichier(complexe, argv[1]);
+	ComplexeCubique<DIM_C,DIM_P,TYPE> complexe;
+	if (argc == 2)
+	{
+		Parser parseCeFichier(complexe, argv[1]);
 
-        std::cout << complexe << std::endl;
-    }
+		std::cout << complexe << std::endl;
+	}
 
-    glutInit(&argc, argv);
-    QApplication app(argc, argv);
-    app.setApplicationName("Cubical complex");
+	glutInit(&argc, argv);
+	QApplication app(argc, argv);
+	app.setApplicationName("Cubical complex");
 
-    Viewer<3,3,int> viewer(&complexe);
+	Viewer<3,3,int> viewer(&complexe);
 
-    viewer.show();
-    return app.exec();
+	viewer.show();
+	return app.exec();
 
-    //comp.~ComplexeCubique();
-    return EXIT_SUCCESS;
+	//comp.~ComplexeCubique();
+	return EXIT_SUCCESS;
 }

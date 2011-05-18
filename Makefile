@@ -203,8 +203,7 @@ main.o: main.cpp ComplexeCubique.h \
 		Point.h \
 		Viewer.h \
 		Parser.h \
-		ParserBoucle.h \
-		BoucleParser.h
+		ParserBoucle.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 ####### Install

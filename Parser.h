@@ -8,7 +8,6 @@
 
 #include "ComplexeCubique.h"
 #include "ParserBoucle.h"
-#include "BoucleParser.h"
 
 class Parser
 {
@@ -24,44 +23,38 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe, char* nomFichier)
 
 	if (fichier)
 	{
-		std::string input;
-		std::getline(fichier,input);
-		std::istringstream ligne(input);
+	std::string input;
+	std::getline(fichier,input);
+	std::istringstream ligne(input);
 
-		int dim_complex, dim_points;
-		ligne >> dim_complex >> dim_points;
-		if (dim_complex != DIM_C || dim_points != DIM_P)
-		{
-			std::cout << "Dimensions du complexe, des points";
-               std::cout << " ou type des points non concordants :" << std::endl;
-               std::cout << "Vérifiez les valeurs et relancez le programme." << std::endl;
-               std::cout << "Dimension complexe :" << dim_complex << " != " << DIM_C<< std::endl;
-               std::cout << "Dimension points :" << dim_points << " != " << DIM_P << std::endl;
-			fichier.std::ifstream::~ifstream();
-			exit(EXIT_FAILURE);
-		}
+	int dim_complex, dim_points;
+	ligne >> dim_complex >> dim_points;
+	if (dim_complex != DIM_C || dim_points != DIM_P)
+	{
+		std::cout << "Dimensions du complexe, des points";
+		std::cout << " ou type des points non concordants :" << std::endl;
+		std::cout << "Vérifiez les valeurs et relancez le programme." << std::endl;
+		std::cout << "Dimension complexe :" << dim_complex << " != " << DIM_C<< std::endl;
+		std::cout << "Dimension points :" << dim_points << " != " << DIM_P << std::endl;
+		fichier.std::ifstream::~ifstream();
+		exit(EXIT_FAILURE);
+	}
 
-		std::vector<int> nombreCellules;
-		std::getline(fichier,input);
-		ligne.str(input);
-		// remplissage des nombres maximum de cellules
-          int nb;
-		while (!ligne.eof())
-		{
-               ligne >> nb;
-               nombreCellules.push_back(nb);
-          }
+	std::vector<int> nombreCellules;
+	std::getline(fichier,input);
+	ligne.str(input);
+	// remplissage des nombres maximum de cellules
+	int nb;
+	while (!ligne.eof())
+	{
+		ligne >> nb;
+		nombreCellules.push_back(nb);
+	}
 
-		//TODO
-		// on va faire boucler la classe BoucleParse
-		// pour qu'il récupére les cellules à mettre dans complexe
-		// et evitez d'avoir une macro toute moche
-			
-		// DIM_C+1 : evite d'avoir du code redondant
-          BoucleParser<0,DIM_C+1> boucle(complexe, fichier, nombreCellules);
+	// DIM_C+1 : evite d'avoir du code redondant
+	BoucleParser<0,DIM_C+1> boucle(complexe, fichier, nombreCellules);
 
-          //fichier.std::ifstream::~ifstream();
-
+	//fichier.std::ifstream::~ifstream();
      }
 }
 
