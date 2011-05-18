@@ -60,11 +60,8 @@ T& Point<k,T>::operator[](int i)
 template <int k, typename T>
 std::ostream& operator<<(std::ostream& sortie, const Point<k,T>& point)
 {
-    sortie << "Point :" << std::endl;
-    sortie << "\tDimension = " << point.getDimension() << std::endl;
-    sortie << "\tAdresse = " << &point << std::endl;
     for(int i=0; i<k; i++)
-        sortie << "\tcoordonnees[" << i << "] = " << point.coordonnees[i] << std::endl;
+        sortie << point.coordonnees[i] << " ";
     return sortie;
 }
 

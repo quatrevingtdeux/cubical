@@ -1,21 +1,121 @@
-#ifndef PARSERBOUCLE_H
-#define PARSERBOUCLE_H
+#ifndef BOUCLEPARSER_H
+#define BOUCLEPARSER_H
 
-template <int Start, int End>
-class ParserBoucle
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include "ComplexeCubique.h"
+
+#define DIM_C 3
+#define DIM_P 3
+#define TYPE int
+
+template <int Indice, int Dimension>
+class BoucleParser
 {
-    public:
-        ParserBoucle();
-        ~ParserBoucle() {}
-
+	public:
+		BoucleParser() {}
+		BoucleParser(	ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
+					std::ifstream& fichier,
+					const std::vector<int>& nombreCellules);
+		~BoucleParser() {}
 };
 
-template <int Start, int End>
-ParserBoucle<Start,End>::ParserBoucle()
+template <int Indice, int Dimension>
+BoucleParser<Indice, Dimension>::BoucleParser(
+							ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
+							std::ifstream& fichier,
+							const std::vector<int>& nombreCellules)
 {
-
-
+	// traitement pour l'ajout de chaque ligne du fichier dans le complexe
+	std::string input;
+	std::istringstream ligne;
+	std::vector<int> indiceCellules;
+	std::vector<Cellule<Indice-1>*> cellules;
+	
+	for (int i = 0; i < nombreCellules[Indice]; ++i)
+	{
+		std::getline(fichier, input);
+		if (input != "")
+			--i;
+		else
+		{
+			std::string indice;
+			ligne.str(input);
+			for (int i = 0; i < Indice*2; ++i)
+			{
+				ligne >> indice;
+				indiceCellules.push_back(atoi(indice.c_str()));
+			}
+			
+			Cellule<Indice>* nouvelleICellule = new Cellule<Indice>();
+			
+			complexe.ajouterCellule(
+					static_cast<CelluleVirtuelle*>(nouvelleICellule),
+					indiceCellules);
+		}		
+	}
+	
+	BoucleParser<Indice+1, Dimension> traiter(complexe, fichier, nombreCellules);
 }
+
+
+
+template <int Dimension>
+class BoucleParser<0,Dimension>
+{
+	public:
+		BoucleParser() {}
+		BoucleParser(	ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
+					std::ifstream& fichier,
+					const std::vector<int>& nombreCellules);
+		~BoucleParser() {}
+};
+
+template <int Dimension>
+BoucleParser<0, Dimension>::BoucleParser(
+							ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
+							std::ifstream& fichier,
+							const std::vector<int>& nombreCellules)
+{
+	// traitement pour l'ajout de chaque ligne du fichier dans le complexe
+	std::string input;
+	std::istringstream ligne;
+	std::vector<TYPE> val;
+	
+	for (int i = 0; i < nombreCellules[0]; ++i)
+	{
+		std::getline(fichier, input);
+		if (input != "")
+		{
+			TYPE valeur;
+			ligne.str(input);
+			for (int p = 0; p < DIM_P; ++p)
+			{
+				ligne >> valeur;
+				val.push_back(valeur); // TODO PROBLEME ne donne que des zeros
+			}
+			Point<DIM_P, TYPE> nouveauPoint(val);
+			val.clear();
+			Cellule<0>* nouvelle0Cellule = new Cellule<0>(nouveauPoint);
+			
+			complexe.ajouterCellule(
+				static_cast<CelluleVirtuelle*>(nouvelle0Cellule));
+		}
+	}
+	
+	BoucleParser<1, Dimension> traiter(complexe, fichier, nombreCellules);
+}
+
+template <int Dimension>
+class BoucleParser<Dimension, Dimension>
+{
+	public:
+		BoucleParser(	ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
+					std::ifstream& fichier,
+					const std::vector<int>& nombreCellules) 
+		{ /*pas de code redondant*/ }
+};
 
 
 #endif
