@@ -82,7 +82,7 @@ template<int i>
 Cellule<i>::Cellule(std::vector<Cellule<i-1>*>* cellulesbords)
 {
     typename std::vector<Cellule<i-1>*>::iterator it;
-    for(cellulesbords->begin(); it != cellulesbords->end(); ++it)
+    for(it = cellulesbords->begin(); it != cellulesbords->end(); ++it)
         bords.push_back(*it);
 }
 

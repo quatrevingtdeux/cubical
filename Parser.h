@@ -13,12 +13,12 @@
 class Parser
 {
 	public:
-          Parser(   ComplexeCubique<DIM_C,DIM_P,TYPE> complexe,
+          Parser(   ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
                     char* nomFichier);
 		~Parser() {}
 };
 
-Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
+Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe, char* nomFichier)
 {
 	std::ifstream fichier(nomFichier, std::ifstream::in);
 
@@ -45,12 +45,12 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
 		std::getline(fichier,input);
 		ligne.str(input);
 		// remplissage des nombres maximum de cellules
-		int nb;
+          int nb;
 		while (!ligne.eof())
 		{
-			ligne >> nb;
-			nombreCellules.push_back(nb);
-		}
+               ligne >> nb;
+               nombreCellules.push_back(nb);
+          }
 
 		//TODO
 		// on va faire boucler la classe BoucleParse
@@ -60,8 +60,9 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
 		// DIM_C+1 : evite d'avoir du code redondant
           BoucleParser<0,DIM_C+1> boucle(complexe, fichier, nombreCellules);
 
-		fichier.std::ifstream::~ifstream();
-	}
+          //fichier.std::ifstream::~ifstream();
+
+     }
 }
 
 #endif

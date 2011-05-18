@@ -31,23 +31,25 @@ BoucleParser<Indice, Dimension>::BoucleParser(
 	std::string input;
 	std::istringstream ligne;
      std::vector<int> indiceCellules;
+     int indice;
 	
 	for (int i = 0; i < nombreCellules[Indice]; ++i)
-	{
-		std::getline(fichier, input);
-		if (input != "")
+     {
+          std::getline(fichier, input);
+          if (input == "")
 			--i;
 		else
-		{
-			std::string indice;
-			ligne.str(input);
+          {
+               ligne.clear();
+               ligne.str(input);
 			for (int i = 0; i < Indice*2; ++i)
 			{
 				ligne >> indice;
-                    indiceCellules.push_back(atoi(indice.c_str()));
+                    indiceCellules.push_back(indice);
                }
 
                complexe.creerCellule<Indice>(indiceCellules);
+               indiceCellules.clear();
           }
 	}
 	
@@ -77,27 +79,33 @@ BoucleParser<0, Dimension>::BoucleParser(
 	std::string input;
 	std::istringstream ligne;
 	std::vector<TYPE> val;
-	
+
 	for (int i = 0; i < nombreCellules[0]; ++i)
-	{
+     {
 		std::getline(fichier, input);
-		if (input != "")
+          std::cout << "toto" << input << std::endl;
+          if (input == "")
+              i--;
+          else
 		{
-			TYPE valeur;
-			ligne.str(input);
+               TYPE valeur;
+               val.clear();
+               ligne.clear();
+               ligne.str(input);
+               std::cout << "ligne" << ligne.str() << std::endl;
 			for (int p = 0; p < DIM_P; ++p)
 			{
 				ligne >> valeur;
-				val.push_back(valeur); // TODO PROBLEME ne donne que des zeros
-			}
+                    val.push_back(valeur);
+               }
+
                Point<DIM_P,TYPE>* nouveauPoint = new Point<DIM_P,TYPE>(val);
-               val.clear();
 
                complexe.creerCellule(nouveauPoint);
 		}
 	}
 	
-	BoucleParser<1, Dimension> traiter(complexe, fichier, nombreCellules);
+     BoucleParser<1, Dimension> traiter(complexe, fichier, nombreCellules);
 }
 
 template <int Dimension>
@@ -107,7 +115,11 @@ class BoucleParser<Dimension, Dimension>
 		BoucleParser(	ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe,
 					std::ifstream& fichier,
 					const std::vector<int>& nombreCellules) 
-		{ /*pas de code redondant*/ }
+          { /*pas de code redondant*/
+              (void) complexe;
+              (void) fichier;
+              (void) nombreCellules;
+          }
 };
 
 
