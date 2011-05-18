@@ -19,6 +19,8 @@ class CelluleVirtuelle
         virtual ~CelluleVirtuelle();
         int getDimension() const;
         std::vector<CelluleVirtuelle*>* getBords();
+	   void setBords(std::vector<CelluleVirtuelle*>& bords) 
+			{ this->bords = bords;}
         bool hasIMoins1Cellule(CelluleVirtuelle* cellule);
         friend std::ostream& operator<<(std::ostream& sortie, const CelluleVirtuelle& cellule);
     protected:

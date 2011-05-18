@@ -37,7 +37,7 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
 			std::cout << "Vérifiez les valeurs et recompilez" << std::endl;
 			std::cout << "dim comple:" << dim_complex << " != " << DIM_C<< std::endl;
 			std::cout << "dim points:" << dim_points << " != " << DIM_P << std::endl;
-			//fichier.~ifstream();
+			fichier.std::ifstream::~ifstream();
 			exit(EXIT_FAILURE);
 		}
 
@@ -45,8 +45,12 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
 		std::getline(fichier,input);
 		ligne.str(input);
 		// remplissage des nombres maximum de cellules
-		for (int i = 0; !ligne.eof(); ++i)
-			ligne >> nombreCellules[i];
+		int nb;
+		while (!ligne.eof())
+		{
+			ligne >> nb;
+			nombreCellules.push_back(nb);
+		}
 
 		//TODO
 		// on va faire boucler la classe BoucleParse
@@ -56,7 +60,7 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE> complexe, char* nomFichier)
 		// DIM_C+1 : evite d'avoir du code redondant
 		BoucleParser<0,DIM_C+1> cellulei(complexe, fichier, nombreCellules);
 
-		//fichier.~ifstream();
+		fichier.std::ifstream::~ifstream();
 	}
 }
 

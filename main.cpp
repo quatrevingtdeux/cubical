@@ -39,8 +39,8 @@ int main(int argc, char** argv)
 	
 	// view lol
 	
-	ParseFichier.~Parser();
-	cc.~ComplexeCubique();
+// 	ParseFichier.~Parser();
+// 	cc.~ComplexeCubique();
  	
 	/*
 	//Test de Point

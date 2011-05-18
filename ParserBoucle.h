@@ -33,20 +33,23 @@ BoucleParser<Indice, Dimension>::BoucleParser(
 	{
 		std::getline(fichier, input);
 		if (input != "")
+			--i;
+		else
 		{
+			std::string indice;
 			ligne.str(input);
 			for (int i = 0; i < Indice*2; ++i)
-				ligne >> indiceCellules[i];
-			
-			// trouver les i-1 cellules avec les indices
-			
+			{
+				ligne >> indice;
+				indiceCellules.push_back(atoi(indice.c_str()));
+			}
 			
 			Cellule<Indice>* nouvelleICellule = new Cellule<Indice>();
 			
 			complexe.ajouterCellule(
-				static_cast<CelluleVirtuelle*>(nouvelleICellule));
-		}
-		
+					static_cast<CelluleVirtuelle*>(nouvelleICellule),
+					indiceCellules);
+		}		
 	}
 	
 	BoucleParser<Indice+1, Dimension> traiter(complexe, fichier, nombreCellules);
@@ -81,10 +84,15 @@ BoucleParser<0, Dimension>::BoucleParser(
 		std::getline(fichier, input);
 		if (input != "")
 		{
+			TYPE valeur;
 			ligne.str(input);
 			for (int p = 0; p < DIM_P; ++p)
-				ligne >> val[p];
+			{
+				ligne >> valeur;
+				val.push_back(valeur); // TODO PROBLEME ne donne que des zeros
+			}
 			Point<DIM_P, TYPE> nouveauPoint(val);
+			val.clear();
 			Cellule<0>* nouvelle0Cellule = new Cellule<0>(nouveauPoint);
 			
 			complexe.ajouterCellule(

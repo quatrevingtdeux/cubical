@@ -18,6 +18,7 @@ class ComplexeCubique
 
           bool estValide();
           void ajouterCellule(CelluleVirtuelle* cellule);
+		void ajouterCellule(CelluleVirtuelle* cellule, std::vector<int> indiceBords);
           void supprimerCellule(CelluleVirtuelle* cellule);
           std::vector<CelluleVirtuelle*>::iterator touverCellule(CelluleVirtuelle* cellule);
           std::vector<CelluleVirtuelle*>::iterator trouverIPlus1Cellule(CelluleVirtuelle* cellule);
@@ -84,6 +85,25 @@ void ComplexeCubique<n, k, T>::ajouterCellule(CelluleVirtuelle* cellule)
 {
     assert(cellule->getDimension() <= n);
     ensemblesCellules[cellule->getDimension()]->push_back(cellule);
+}
+
+template<int n, int k, typename T>
+void ComplexeCubique<n, k, T>::ajouterCellule(	CelluleVirtuelle* cellule,
+										std::vector<int> indiceBords)
+{
+	assert(cellule->getDimension() <= n);
+
+	std::vector<CelluleVirtuelle*> bords;
+
+	int dimC = cellule->getDimension();
+	std::vector<CelluleVirtuelle*>* vec = ensemblesCellules[dimC-1];
+	for (int i = 0; i < indiceBords.size(); ++i)
+	{
+		CelluleVirtuelle* tmp = vec->at(indiceBords[i]);
+		bords.push_back(tmp);
+	}
+
+	ensemblesCellules[cellule->getDimension()]->push_back(cellule);
 }
 
 template<int n, int k, typename T>
