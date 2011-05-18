@@ -5,8 +5,10 @@
 TEMPLATE = app
 INCLUDEPATH += .
 
+QT += core gui xml opengl
+
+
 SOURCES +=\
-    main-viewer.cpp \
     main.cpp
 
 HEADERS  += \
