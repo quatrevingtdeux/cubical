@@ -36,7 +36,7 @@ BoucleParser<Indice, Dimension>::BoucleParser(
 	for (int i = 0; i < nombreCellules[Indice]; ++i)
      {
           std::getline(fichier, input);
-          if (input == "")
+          if (input == "\r")
 			--i;
 		else
           {
@@ -55,8 +55,6 @@ BoucleParser<Indice, Dimension>::BoucleParser(
 	
 	BoucleParser<Indice+1, Dimension> traiter(complexe, fichier, nombreCellules);
 }
-
-
 
 template <int Dimension>
 class BoucleParser<0,Dimension>
@@ -82,9 +80,8 @@ BoucleParser<0, Dimension>::BoucleParser(
 
 	for (int i = 0; i < nombreCellules[0]; ++i)
      {
-		std::getline(fichier, input);
-          std::cout << "toto" << input << std::endl;
-          if (input == "")
+          std::getline(fichier, input);
+          if (input == "\r")
               i--;
           else
 		{
@@ -92,7 +89,7 @@ BoucleParser<0, Dimension>::BoucleParser(
                val.clear();
                ligne.clear();
                ligne.str(input);
-               std::cout << "ligne" << ligne.str() << std::endl;
+               std::cout << input << std::endl;
 			for (int p = 0; p < DIM_P; ++p)
 			{
 				ligne >> valeur;
@@ -102,7 +99,9 @@ BoucleParser<0, Dimension>::BoucleParser(
                Point<DIM_P,TYPE>* nouveauPoint = new Point<DIM_P,TYPE>(val);
 
                complexe.creerCellule(nouveauPoint);
+               delete nouveauPoint;
 		}
+          std::cout << "SUIVANT\n";
 	}
 	
      BoucleParser<1, Dimension> traiter(complexe, fichier, nombreCellules);

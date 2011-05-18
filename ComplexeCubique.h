@@ -43,12 +43,12 @@ ComplexeCubique<n,k,T>::~ComplexeCubique()
 
      for (itMap = ensemblesCellules.begin(); itMap != ensemblesCellules.end(); ++itMap)
      {
-          std::vector<CelluleVirtuelle*> vVirtICell = *(itMap->second);
-          for (itVec = vVirtICell.begin(); itVec != vVirtICell.end(); )
+          std::vector<CelluleVirtuelle*>* vVirtICell = itMap->second;
+          for (itVec = vVirtICell->begin(); itVec != vVirtICell->end(); ++itVec)
           {
                delete *itVec;
-               itVec = vVirtICell.erase(itVec);
           }
+          vVirtICell->clear();
           delete itMap->second;
      }
      ensemblesCellules.clear();
@@ -113,7 +113,6 @@ void ComplexeCubique<n,k,T>::supprimerCellule(CelluleVirtuelle* cellule)
     }
 
     std::vector<CelluleVirtuelle*>::iterator it = touverCellule(cellule);
-    delete cellule;
     ensemblesCellules[dimension]->erase(it);
 }
 
