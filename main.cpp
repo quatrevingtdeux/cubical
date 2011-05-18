@@ -5,14 +5,18 @@
 #include "ComplexeCubique.h"
 #include "Cellule.h"
 
-//#include "Parser.h"
+#include "Parser.h"
 
 using namespace std;
 
 int main(int argc, char** argv)
 {
-    ComplexeCubique<3,3,int> comp;
-    comp.creerCellule(new Point<3,int>());
-    comp.getCellule(0,0);
+    ComplexeCubique<DIM_C,DIM_P,TYPE> comp;
+    if (argc == 2)
+    {
+        Parser parseCeFichier(comp, argv[1]);
+        std::cout << comp << std::endl;
+    }
+
     comp.~ComplexeCubique();
 }

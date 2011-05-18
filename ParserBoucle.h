@@ -30,8 +30,7 @@ BoucleParser<Indice, Dimension>::BoucleParser(
 	// traitement pour l'ajout de chaque ligne du fichier dans le complexe
 	std::string input;
 	std::istringstream ligne;
-	std::vector<int> indiceCellules;
-	std::vector<Cellule<Indice-1>*> cellules;
+     std::vector<int> indiceCellules;
 	
 	for (int i = 0; i < nombreCellules[Indice]; ++i)
 	{
@@ -45,15 +44,11 @@ BoucleParser<Indice, Dimension>::BoucleParser(
 			for (int i = 0; i < Indice*2; ++i)
 			{
 				ligne >> indice;
-				indiceCellules.push_back(atoi(indice.c_str()));
-			}
-			
-			Cellule<Indice>* nouvelleICellule = new Cellule<Indice>();
-			
-			complexe.ajouterCellule(
-					static_cast<CelluleVirtuelle*>(nouvelleICellule),
-					indiceCellules);
-		}		
+                    indiceCellules.push_back(atoi(indice.c_str()));
+               }
+
+               complexe.creerCellule<Indice>(indiceCellules);
+          }
 	}
 	
 	BoucleParser<Indice+1, Dimension> traiter(complexe, fichier, nombreCellules);
@@ -95,12 +90,10 @@ BoucleParser<0, Dimension>::BoucleParser(
 				ligne >> valeur;
 				val.push_back(valeur); // TODO PROBLEME ne donne que des zeros
 			}
-			Point<DIM_P, TYPE> nouveauPoint(val);
-			val.clear();
-			Cellule<0>* nouvelle0Cellule = new Cellule<0>(nouveauPoint);
-			
-			complexe.ajouterCellule(
-				static_cast<CelluleVirtuelle*>(nouvelle0Cellule));
+               Point<DIM_P,TYPE>* nouveauPoint = new Point<DIM_P,TYPE>(val);
+               val.clear();
+
+               complexe.creerCellule(nouveauPoint);
 		}
 	}
 	

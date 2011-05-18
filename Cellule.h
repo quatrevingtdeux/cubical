@@ -65,7 +65,7 @@ class Cellule : public CelluleVirtuelle
 {
     public:
         Cellule();
-        Cellule(std::vector<Cellule<i-1>*> cellulesbords);
+        Cellule(std::vector<Cellule<i-1>*>* cellulesbords);
         ~Cellule();
 };
 
@@ -79,9 +79,11 @@ Cellule<i>::Cellule()
 }
 
 template<int i>
-Cellule<i>::Cellule(std::vector<Cellule<i-1>* > cellulesbords)
+Cellule<i>::Cellule(std::vector<Cellule<i-1>*>* cellulesbords)
 {
-    this->bords = cellulesbords;
+    typename std::vector<Cellule<i-1>*>::iterator it;
+    for(cellulesbords->begin(); it != cellulesbords->end(); ++it)
+        bords.push_back(*it);
 }
 
 template<int i>

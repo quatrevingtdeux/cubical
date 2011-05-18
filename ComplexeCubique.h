@@ -13,7 +13,7 @@ class ComplexeCubique
           ~ComplexeCubique();
           bool estValide();
           void creerCellule(Point<k,T>* point);
-          template<int dimension> void creerCellule(std::vector<CelluleVirtuelle*> cellulesBord);
+          template<int dimension> void creerCellule(const std::vector<int>& indicesCellules);
           void supprimerCellule(CelluleVirtuelle* cellule);
           std::vector<CelluleVirtuelle*>::iterator touverCellule(CelluleVirtuelle* cellule);
           std::vector<CelluleVirtuelle*>::iterator trouverIPlus1Cellule(CelluleVirtuelle* cellule);
@@ -85,8 +85,16 @@ void ComplexeCubique<n,k,T>::creerCellule(Point<k,T>* point)
 
 template<int n, int k, typename T>
 template<int dimension>
-void ComplexeCubique<n,k,T>::creerCellule(std::vector<CelluleVirtuelle*> cellulesBord)
+void ComplexeCubique<n,k,T>::creerCellule(const std::vector<int>& indicesCellules)
 {
+    Cellule<dimension-1>* temp;
+    std::vector<Cellule<dimension-1>*>* cellulesBord = new std::vector<Cellule<dimension-1>*>();
+    for (unsigned int i = 0; i < indicesCellules.size(); ++i)
+    {
+        temp = static_cast<Cellule<dimension-1>*>(ensemblesCellules[dimension]->at(i));
+        cellulesBord->push_back(temp);
+    }
+
     Cellule<dimension>* cellule = new Cellule<dimension>(cellulesBord);
     ensemblesCellules[dimension]->push_back(cellule);
 }
@@ -174,7 +182,7 @@ template<int n, int k, typename T>
 CelluleVirtuelle* ComplexeCubique<n,k,T>::getCellule(int dimension, int position)
 {
     assert(dimension >= 0 && dimension <= n);
-    assert(position >= 0 && position < ensemblesCellules[dimension]->size());
+    assert(position >= 0 && (unsigned) position < ensemblesCellules[dimension]->size());
     return ensemblesCellules[dimension]->at(position);
 }
 
