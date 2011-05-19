@@ -28,9 +28,15 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-		std::cout << "Avant simplification :\n" << complexe << std::endl;
+		std::cout << "===============================================================" << std::endl;
+		std::cout << "               Complexe avant simplification                   " << std::endl;
+		std::cout << "===============================================================" << std::endl;
+		std::cout << complexe;
 		while(complexe.simplifier());
-		std::cout << "Après simplification :\n" << complexe << std::endl;
+		std::cout << "===============================================================" << std::endl;
+		std::cout << "               Complexe après simplification                   " << std::endl;
+		std::cout << "===============================================================" << std::endl;
+		std::cout << complexe;
 	}
 
 	complexe.~ComplexeCubique();

@@ -459,7 +459,10 @@ void Viewer<n, k, T>::keyPressEvent(QKeyEvent *e)
 	{
 		// Traitement de l'action associé à la touche p
 		handled = true;
-		std::cout << *complexe << std::endl;
+		std::cout << "===============================================================" << std::endl;
+		std::cout << "                          Complexe                             " << std::endl;
+		std::cout << "===============================================================" << std::endl;
+		std::cout << *complexe;
 		updateGL();
 	}
 	if (!handled)
