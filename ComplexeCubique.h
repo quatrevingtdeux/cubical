@@ -17,8 +17,8 @@ class ComplexeCubique
           void supprimerCellule(CelluleVirtuelle* cellule);
           std::vector<CelluleVirtuelle*>::iterator trouverCellule(CelluleVirtuelle* cellule);
           std::vector<CelluleVirtuelle*>::iterator trouverIPlus1Cellule(CelluleVirtuelle* cellule);
-          bool reduction(CelluleVirtuelle* c1, CelluleVirtuelle* c2);
-          void simplification();
+          bool reduire(CelluleVirtuelle* c1, CelluleVirtuelle* c2);
+          bool simplifier();
           std::vector<CelluleVirtuelle*>* getCellules(int dimension);
           CelluleVirtuelle* getCellule(int dimension, int position);
           template<int _n, int _k, typename _T> friend std::ostream& operator<<(std::ostream& sortie, const ComplexeCubique<_n,_k,_T>& complexe);
@@ -98,6 +98,7 @@ void ComplexeCubique<n,k,T>::creerCellule(const std::vector<int>& indicesCellule
     }
     Cellule<dimension>* cellule = new Cellule<dimension>(cellulesBord);
     ensemblesCellules[dimension]->push_back(cellule);
+    delete cellulesBord;
 }
 
 template<int n, int k, typename T>
@@ -149,7 +150,7 @@ std::vector<CelluleVirtuelle*>::iterator ComplexeCubique<n,k,T>::trouverIPlus1Ce
 }
 
 template<int n, int k, typename T>
-bool ComplexeCubique<n,k,T>::reduction(CelluleVirtuelle* c1, CelluleVirtuelle* c2)
+bool ComplexeCubique<n,k,T>::reduire(CelluleVirtuelle* c1, CelluleVirtuelle* c2)
 {
     if ((c1 == NULL || c2 == NULL) && (c1->getDimension() == c2->getDimension() - 1))
         return false;
@@ -169,7 +170,7 @@ bool ComplexeCubique<n,k,T>::reduction(CelluleVirtuelle* c1, CelluleVirtuelle* c
 
     //Il n’existe pas de (i + 2)-cellule ayant c2 dans son bord
     dimension = c1->getDimension() + 2;
-    if (n <= c1->getDimension() + 2)
+    if (c1->getDimension() + 2 <= n)
     {
         for (it = ensemblesCellules[dimension]->begin(); it != ensemblesCellules[dimension]->end(); ++it)
         {
@@ -186,36 +187,24 @@ bool ComplexeCubique<n,k,T>::reduction(CelluleVirtuelle* c1, CelluleVirtuelle* c
 }
 
 template<int n, int k, typename T>
-void ComplexeCubique<n,k,T>::simplification()
+bool ComplexeCubique<n,k,T>::simplifier()
 {
-    bool Reductible = false;
-
-    std::vector<CelluleVirtuelle*>::iterator itCellule, itCelluleBord;
-    std::vector<CelluleVirtuelle*>* vect;
-
-    for (int i = n; i > 0; --i)
+    //Pour chaque dimension
+    for(int dimension = n; dimension>0; dimension--)
     {
-        vect = ensemblesCellules.find(i)->second;
-
-        for (itCellule = vect->begin(); itCellule != vect->end(); ++itCellule)
+        //Pour chaque i cellule
+        for(std::vector<CelluleVirtuelle*>::iterator itCellule = ensemblesCellules[dimension]->begin(); itCellule != ensemblesCellules[dimension]->end(); ++itCellule)
         {
-            if (Reductible)
+            //Parcourir ses bords (i-1 cellules)
+            for(std::vector<CelluleVirtuelle*>::iterator itBord = (*itCellule)->getBords()->begin(); itBord != (*itCellule)->getBords()->end(); ++itBord)
             {
-                itCellule = vect->begin();
-                Reductible = false;
-            }
-
-            for (itCelluleBord = (*itCellule)->getBords()->begin();
-                 itCelluleBord != (*itCellule)->getBords()->end();
-                 ++itCelluleBord)
-            {
-                Reductible = reduction(*itCelluleBord, *itCellule);
-                if (Reductible)
-                    break;
+                //Si reduction OK, it-- pour les 2 iterators
+                if(reduire(*itBord,*itCellule))
+                    return true;
             }
         }
-
     }
+    return false;
 }
 
 template<int n, int k, typename T>
@@ -237,7 +226,9 @@ std::ostream& operator<<(std::ostream& sortie, const ComplexeCubique<n,k,T>& com
 {
     sortie << n << " " << k << std::endl;
     for (int i=0; i<=n; i++)
+    {
         sortie << complexe.ensemblesCellules.find(i)->second->size() << " ";
+    }
     sortie << std::endl << std::endl;
 
     for (unsigned int i=0; i<complexe.ensemblesCellules.find(0)->second->size(); i++)

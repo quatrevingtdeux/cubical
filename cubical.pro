@@ -18,6 +18,7 @@ HEADERS  += \
     Conteneur.h \
     ParserBoucle.h \
     Parser.h \
-    ComplexeCubique.h
+    ComplexeCubique.h \
+    Viewer.h
 
 LIBS += -lglut -lqglviewer-qt4

@@ -29,6 +29,7 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe, char* nomFichier)
 
 	int dim_complex, dim_points;
 	ligne >> dim_complex >> dim_points;
+	ligne.clear();
 	if (dim_complex != DIM_C || dim_points != DIM_P)
 	{
 		std::cout << "Dimensions du complexe, des points";
@@ -45,12 +46,8 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe, char* nomFichier)
 	ligne.str(input);
 	// remplissage des nombres maximum de cellules
 	int nb;
-	while (!ligne.eof())
-	{
-		ligne >> nb;
+	while (ligne >> nb)
 		nombreCellules.push_back(nb);
-	}
-
 	// DIM_C+1 : evite d'avoir du code redondant
 	BoucleParser<0,DIM_C+1> boucle(complexe, fichier, nombreCellules);
 

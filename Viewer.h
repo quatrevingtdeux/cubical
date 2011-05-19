@@ -64,7 +64,7 @@ class Viewer : public QGLViewer
 template <int n, int k, typename T>
 Viewer<n, k, T>::Viewer(ComplexeCubique<n, k, T> *cc)
 {
-     quadrics = gluNewQuadric();
+	quadrics = gluNewQuadric();
      complexe = cc;
 }
 
@@ -119,47 +119,45 @@ void Viewer<n, k, T>::draw_sphere(double x, double y, double z, double lg)
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw_cylinder(double x, double y, double z, double lg, double diameter, int dir)
 {
-     glColor3f(1.f, 1.f, .5f);
+	glColor3f(1.f, 1.f, .5f);
 
-     double p = lg / 2;
-     glPushMatrix();
-     glTranslatef(x - (dir == X ? p : 0), y - (dir == Y ? p : 0), z - (dir == Z ? p : 0));
+	double p = lg / 2;
+	glPushMatrix();
+	glTranslatef(x - (dir == X ? p : 0), y - (dir == Y ? p : 0), z - (dir == Z ? p : 0));
 
-     if (dir == X)
-          glRotatef(90, 0, 1, 0);
-     else if (dir == Y)
-          glRotatef(-90, 1, 0, 0);
+	if (dir == X)
+		glRotatef(90, 0, 1, 0);
+	else if (dir == Y)
+		glRotatef(-90, 1, 0, 0);
 
-     gluCylinder(quadrics, diameter, diameter, lg, 16, 1);
-     glPopMatrix();
+	gluCylinder(quadrics, diameter, diameter, lg, 16, 1);
+	glPopMatrix();
 }
 
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw_square(double x, double y, double z, double lg, int dir1, int dir2)
 {
-     glColor3f(0.5f, 0.5f, 1.0f);
+	glColor3f(0.5f, 0.5f, 1.0f);
 
-     assert(dir1 < dir2);
+	assert(dir1 < dir2);
 
-     double p = lg / 2;
-     glPushMatrix();
-     glTranslatef(x, y, z);
-     
+	double p = lg / 2;
+	glPushMatrix();
+	glTranslatef(x, y, z);
 
-     
-     if (dir1 == X && dir2 == Z)
-          glRotatef(90, 1, 0, 0);
-     else if (dir1 == Y && dir2 == Z)
-          glRotatef(90, 0, 1, 0);
+	if (dir1 == X && dir2 == Z)
+		glRotatef(90, 1, 0, 0);
+	else if (dir1 == Y && dir2 == Z)
+		glRotatef(90, 0, 1, 0);
 
-     glBegin(GL_QUADS);
-     glVertex3f(-p, -p, 0);
-     glVertex3f(+p, -p, 0);
-     glVertex3f(+p, +p, 0);
-     glVertex3f(-p, +p, 0);
-     glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f(-p, -p, 0);
+	glVertex3f(+p, -p, 0);
+	glVertex3f(+p, +p, 0);
+	glVertex3f(-p, +p, 0);
+	glEnd();
 
-     glPopMatrix();
+	glPopMatrix();
 }
 
 template <int n, int k, typename T>
@@ -251,23 +249,19 @@ void Viewer<n, k, T>::draw1Cell(Cellule<1>* cellule)
 			+ pow(((*p2)[2] - (*p1)[2]), 2)
 			);
 	
-	if ((*p2)[0] - (*p1)[0] == 0)
-	{
-		draw_cylinder((double)((*p2)[0] + (*p1)[0]) /2,
-			      (double)((*p2)[1])-lg/2,
-			      (*p2)[2],
-			      lg, .08, Y);
-	}
-	else if ((*p2)[1] - (*p1)[1] == 0)
-	{
-		draw_cylinder((double)(*p1)[0]+lg/2,
-			      (double)((*p1)[1]) ,
-			      (*p1)[2],
-			      lg, .08, X);
-		draw_sphere((*p1)[0], (*p1)[1], (*p1)[2], .3);
-	}
-	else
-		draw_cylinder((*p1)[0], (*p1)[1], (*p1)[2], lg/2, .08, Z);
+	int dir = X;
+
+	if ((*p2)[0] == (*p1)[0] && (*p2)[1] == (*p1)[1]) // axe des profondeurs
+		dir = Z;
+	else if ((*p2)[0] == (*p1)[0]) // axe des ordonnées
+	    dir = Y;
+	else if ((*p2)[1] == (*p1)[1]) // axe des abscisses
+	    dir = X;
+
+	draw_cylinder((double)((*p2)[0] - (*p1)[0]) /2 + (*p1)[0],
+			    (double)((*p2)[1] - (*p1)[1]) /2 + (*p1)[1],
+			    (double)((*p2)[2] - (*p1)[2]) /2 + (*p1)[2],
+			    lg, .08, dir);
 }
 
 template <int n, int k, typename T>
@@ -278,52 +272,82 @@ void Viewer<n, k, T>::draw2Cell(Cellule<2>* cellule)
 
      assert(edges->size() == 4);
 
-     Cellule<1> *edge = static_cast<Cellule<1>*>(edges->at(0));
-     std::vector<CelluleVirtuelle*>* edges2 = edge->getBords();
+	Cellule<1> *edge0 = static_cast<Cellule<1>*>(edges->at(0));
+	std::vector<CelluleVirtuelle*>* edges0 = edge0->getBords();
+	assert(edges0->size() == 2);
 
-     assert(edges2->size() == 2);
+	Cellule<1> *edge1 = static_cast<Cellule<1>*>(edges->at(1));
+	std::vector<CelluleVirtuelle*>* edges1 = edge1->getBords();
+	assert(edges1->size() == 2);
 
-     Cellule<1> *edge2 = static_cast<Cellule<1>*>(edges->at(2));
-     std::vector<CelluleVirtuelle*>* edges3 = edge2->getBords();
+	Cellule<0> *centralPoint = NULL;
+	Cellule<0> *c1 = NULL, *c2 = NULL;
+	Point<k,T> *p1, *p2;
 
-     assert(edges3->size() == 2);
+	Cellule<0> *cellule0_0, *cellule0_1;
 
+	Cellule<0>* cellule1_0 = static_cast<Cellule<0>*>(edges1->at(0));
+	Cellule<0>* cellule1_1 = static_cast<Cellule<0>*>(edges1->at(1));
 
-     Cellule<0>* c1 = static_cast<Cellule<0>*>(edges2->at(0));
-     Cellule<0>* c2 = static_cast<Cellule<0>*>(edges2->at(1));
-     Cellule<0>* c3 = static_cast<Cellule<0>*>(edges3->at(0));
-     Point<k,T> *p1 = &c1->getSommet();
-     Point<k,T> *p2 = &c2->getSommet();
-     Point<k,T> *p3 = &c3->getSommet();
-
-	double lg = sqrt(pow(((*p2)[0] - (*p1)[0]), 2) + pow(((*p2)[1] - (*p1)[1]), 2) + pow(((*p2)[2] - (*p1)[2]), 2));
-
-	if ((*p1)[1] == (*p2)[1] && (*p1)[1] == (*p3)[1]) // les y sont similaires donc on rotate selon x
+	do
 	{
-		draw_square(
-				(double)((*p1)[0]+(*p2)[0])/2,
-				(double)((*p1)[1]+(*p2)[1])/2+lg/2,
-				(double)((*p1)[2]+(*p2)[2])/2, 
-				lg, X, Y);
+		cellule0_0 = static_cast<Cellule<0>*>(edges0->at(0));
+		cellule0_1 = static_cast<Cellule<0>*>(edges0->at(1));
+
+		if (cellule0_0 == cellule1_0 || cellule0_0 == cellule1_1)
+			centralPoint = cellule0_0;
+		else if (cellule0_1 == cellule1_0 || cellule0_1 == cellule1_1)
+			centralPoint = cellule0_1;
+		else
+		{
+			Cellule<1> *edge2 = static_cast<Cellule<1>*>(edges->at(2));
+			edges0 = edge2->getBords();
+		}
 	}
-	else if ((*p1)[0] == (*p2)[0] && (*p1)[0] == (*p3)[0]) // les x sont similaires donc on rotate selon y
+	while (centralPoint == NULL);
+
+	if (centralPoint == cellule0_0)
+		c1 = static_cast<Cellule<0>*>((*edges0)[1]);
+	else if (centralPoint == cellule0_1)
+		c1 = static_cast<Cellule<0>*>((*edges0)[0]);
+
+	if (centralPoint == cellule1_0)
 	{
-		draw_square(
-				(double)((*p1)[0]+(*p2)[0])/2+lg/2,
-				(double)((*p1)[1]+(*p2)[1])/2,
-				(double)((*p1)[2]+(*p2)[2])/2, 
-				lg, X, Z);
-		//draw_square((*p1)[0], (*p1)[1], (*p1)[2], lg, Y, Z);
+		c2 = static_cast<Cellule<0>*>((*edges1)[1]);
+		p1 = &c1->getSommet();
+		p2 = &c2->getSommet();
 	}
 	else
 	{
-		draw_square(
-				(double)((*p1)[0]+(*p2)[0])/2,
-				(double)((*p1)[1]+(*p2)[1])/2,
-				(double)((*p1)[2]+(*p2)[2])/2+lg/2, 
-				lg, Y, Z);
-		//draw_square((*p1)[0], (*p1)[1], (*p1)[2], lg, X, Y);
+		c2 = static_cast<Cellule<0>*>((*edges1)[1]);
+		p1 = &c1->getSommet();
+		p2 = &c2->getSommet();
 	}
+
+	int dir1 = X, dir2 = X;
+
+	if ((*p2)[2] == (*p1)[2])
+	{
+		dir1 = X;
+		dir2 = Y;
+	}
+	else if ((*p2)[0] == (*p1)[0])
+	{
+		dir1 = Y;
+		dir2 = Z;
+	}
+	else if ((*p2)[1] == (*p1)[1])
+	{
+		dir1 = X;
+		dir2 = Z;
+	}
+
+	//double lg = sqrt(pow(((*p2)[0] - (*p1)[0]), 2) + pow(((*p2)[1] - (*p1)[1]), 2) + pow(((*p2)[2] - (*p1)[2]), 2));
+
+	draw_square(	(double)((*p2)[0]-(*p1)[0])/2+(*p1)[0],
+				(double)((*p2)[1]-(*p1)[1])/2+(*p1)[1],
+				(double)((*p2)[2]-(*p1)[2])/2+(*p1)[2],
+				1, dir1, dir2);
 }
 
 template <int n, int k, typename T>
@@ -334,22 +358,63 @@ void Viewer<n, k, T>::draw3Cell(Cellule<3>* cellule)
 
      assert(edges->size() == 6);
 
-     Cellule<2> *c2 = static_cast<Cellule<2>*>(edges->at(0));
-     std::vector<CelluleVirtuelle*>* edges2 = c2->getBords();
+	Cellule<2> *edge0 = static_cast<Cellule<2>*>(edges->at(0));
+	std::vector<CelluleVirtuelle*>* edges0 = edge0->getBords();
 
-     assert(edges2->size() == 4);
+	Cellule<2> *edgeX = NULL;
 
-     Cellule<1> *c3 = static_cast<Cellule<1>*>(edges2->at(0));
-     std::vector<CelluleVirtuelle*>* edges3 = c3->getBords();
+	std::vector<CelluleVirtuelle*>::iterator itFace;
+	std::vector<CelluleVirtuelle*>::iterator itArrete;
+	for(itFace = edges->begin(); itFace != edges->end(); ++itFace)
+	{
+		for(itArrete = edges0->begin(); itArrete != edges0->end(); ++itArrete)
+		{
+			if (std::find((*itFace)->getBords()->begin(),
+					    (*itFace)->getBords()->end(), *itArrete)
+						!= (*itFace)->getBords()->end())
+				break;
+		}
+		if (itArrete == edges0->end())
+			edgeX = static_cast<Cellule<2>*>(*itFace);
+	}
 
-     assert(edges3->size() == 2);
+	assert(edgeX != NULL);
 
-     Cellule<0>* c4 = static_cast<Cellule<0>*>(edges3->at(0));
-     Cellule<0>* c5 = static_cast<Cellule<0>*>(edges3->at(1));
-     Point<k,T> *p1 = &c4->getSommet();
-     Point<k,T> *p2 = &c5->getSommet();
-     double lg = sqrt(pow(((*p2)[0] - (*p1)[0]), 2) + pow(((*p2)[1] - (*p1)[1]), 2) + pow(((*p2)[2] - (*p1)[2]), 2));
-     draw_cube((*p1)[0], (*p1)[1], (*p1)[2], lg);
+	Point<k,double> milieu0, milieuX;
+
+	milieu0[0]= 0.f;
+	milieu0[1]= 0.f;
+	milieu0[2]= 0.f;
+
+	milieuX[0]= 0.f;
+	milieuX[1]= 0.f;
+	milieuX[2]= 0.f;
+
+	std::vector<CelluleVirtuelle*>::iterator bord, bordBord;
+	for (bord = edge0->getBords()->begin(); bord != edge0->getBords()->end(); ++bord)
+	{
+		for (bordBord = (*bord)->getBords()->begin(); bordBord != (*bord)->getBords()->end(); ++bordBord)
+		{
+			milieu0[0] += static_cast<Cellule<0>*>(*bordBord)->getSommet()[0]/8.f;
+			milieu0[1] += static_cast<Cellule<0>*>(*bordBord)->getSommet()[1]/8.f;
+			milieu0[2] += static_cast<Cellule<0>*>(*bordBord)->getSommet()[2]/8.f;
+		}
+	}
+
+	for (bord = edgeX->getBords()->begin(); bord != edgeX->getBords()->end(); ++bord)
+	{
+		for (bordBord = (*bord)->getBords()->begin(); bordBord != (*bord)->getBords()->end(); ++bordBord)
+		{
+			milieuX[0] += static_cast<Cellule<0>*>(*bordBord)->getSommet()[0]/8.f;
+			milieuX[1] += static_cast<Cellule<0>*>(*bordBord)->getSommet()[1]/8.f;
+			milieuX[2] += static_cast<Cellule<0>*>(*bordBord)->getSommet()[2]/8.f;
+		}
+	}
+
+	draw_cube((double)(milieuX[0]-milieu0[0])/2.f+milieu0[0],
+			(double)(milieuX[1]-milieu0[1])/2.f+milieu0[1],
+			(double)(milieuX[2]-milieu0[2])/2.f+milieu0[2],
+			1);
 }
 
 template <int n, int k, typename T>
@@ -366,7 +431,7 @@ void Viewer<n, k, T>::draw()
          }
      }
 
-     // A garder (pour mettre à jour la boundix box d'affichage.
+	// A garder (pour mettre à jour la bounding box d'affichage.
      setSceneBoundingBox(bbmin, bbmax);
 }
 
@@ -390,10 +455,23 @@ void Viewer<n, k, T>::keyPressEvent(QKeyEvent *e)
      {
           // Traitement de l'action associé à la touche s
           handled = true;
-          complexe->simplification();
-          std::cout << "Simplification" << std::endl;
+		while(complexe->simplifier());
           updateGL();
      }
+	else if ((e->key() == Qt::Key_S) && (modifiers == Qt::ShiftModifier))
+	{
+		// Traitement de l'action associé à la touche s
+		handled = true;
+		complexe->simplifier();
+		updateGL();
+	}
+	else if ((e->key() == Qt::Key_P) && (modifiers == Qt::NoButton))
+	{
+		// Traitement de l'action associé à la touche p
+		handled = true;
+		std::cout << *complexe << std::endl;
+		updateGL();
+	}
      if (!handled)
           QGLViewer::keyPressEvent(e);
 }

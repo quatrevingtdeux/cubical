@@ -50,10 +50,6 @@ std::ostream& operator<<(std::ostream& sortie, const CelluleVirtuelle& cellule)
 
 CelluleVirtuelle::~CelluleVirtuelle()
 {
-	for(unsigned int i=0; i < bords.size(); i++)
-	{
-		delete bords[i];
-	}
 }
 
 // ============================================================

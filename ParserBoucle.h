@@ -36,12 +36,14 @@ BoucleParser<Indice, Dimension>::BoucleParser(
 	for (int i = 0; i < nombreCellules[Indice]; ++i)
      {
           std::getline(fichier, input);
-          if (input == "\r")
+
+          ligne.clear();
+          ligne.str(input);
+
+          if (input.empty())
 			--i;
 		else
           {
-               ligne.clear();
-               ligne.str(input);
 			for (int i = 0; i < Indice*2; ++i)
 			{
 				ligne >> indice;
@@ -81,14 +83,16 @@ BoucleParser<0, Dimension>::BoucleParser(
 	for (int i = 0; i < nombreCellules[0]; ++i)
      {
           std::getline(fichier, input);
-          if (input == "\r")
+
+          ligne.clear();
+          ligne.str(input);
+
+          if (input.empty())
               i--;
           else
 		{
                TYPE valeur;
                val.clear();
-               ligne.clear();
-               ligne.str(input);
 			for (int p = 0; p < DIM_P; ++p)
 			{
 				ligne >> valeur;
