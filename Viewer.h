@@ -10,110 +10,107 @@
 
 #include "Cellule.h"
 
-template <int n, int k, typename T>
-class Viewer;
-
 enum { X, Y, Z };
 
 /***************************************************************
- *
+ * Classe Viewer pour afficher la fenêtre
  **************************************************************/
 template <int n, int k, typename T>
 class Viewer : public QGLViewer
 {
-     public:
-          Viewer(ComplexeCubique<n, k, T> *cc);
-          ~Viewer();
+	public:
+		Viewer(ComplexeCubique<n, k, T> *cc);
+		~Viewer();
 
-          template <int dim>
-          void drawCell(CelluleVirtuelle* cellule);
+		template <int dim>
+		void drawCell(CelluleVirtuelle* cellule);
 
-     protected:
-          // Draw a sphere centered in (x,y,z) and with diameter lg
-          void draw_sphere(double x, double y, double z, double lg);
+	protected:
+		// Draw a sphere centered in (x,y,z) and with diameter lg
+		void draw_sphere(double x, double y, double z, double lg);
 
-          // Draw a cylinder centered in (x,y,z), with length lg, and with given diameter
-          void draw_cylinder(double x, double y, double z, double lg, double diameter, int dir);
+		// Draw a cylinder centered in (x,y,z), with length lg, and with given diameter
+		void draw_cylinder(double x, double y, double z, double lg, double diameter, int dir);
 
-          // Draw a square centered in (x,y,z) and with length lg
-          void draw_square(double x, double y, double z, double lg, int dir1, int dir2);
+		// Draw a square centered in (x,y,z) and with length lg
+		void draw_square(double x, double y, double z, double lg, int dir1, int dir2);
 
-          // Draw a cube centered in (x,y,z) and with length lg
-          void draw_cube(double x, double y, double z, double lg);
+		// Draw a cube centered in (x,y,z) and with length lg
+		void draw_cube(double x, double y, double z, double lg);
 
-          void drawCell(CelluleVirtuelle* cellule);
-          void draw0Cell(Cellule<0>* cellule);
-          void draw1Cell(Cellule<1>* cellule);
-          void draw2Cell(Cellule<2>* cellule);
-          void draw3Cell(Cellule<3>* cellule);
-          virtual void draw();
+		void drawCell(CelluleVirtuelle* cellule);
+		void draw0Cell(Cellule<0>* cellule);
+		void draw1Cell(Cellule<1>* cellule);
+		void draw2Cell(Cellule<2>* cellule);
+		void draw3Cell(Cellule<3>* cellule);
+		virtual void draw();
 
-          virtual void init();
+		virtual void init();
 
-          // A utiliser/modifier si vous voulez ajouter une action associé à un racourci clavier.
-          void keyPressEvent(QKeyEvent *e);
-          virtual QString helpString() const;
+		// A utiliser/modifier si vous voulez ajouter une action associé à un racourci clavier.
+		void keyPressEvent(QKeyEvent *e);
+		virtual QString helpString() const;
 
-     private:
-          GLUquadric *quadrics;
-          qglviewer::Vec bbmin, bbmax;
-          bool first;
-          ComplexeCubique<n, k, T> *complexe;
+	private:
+		GLUquadric *quadrics;
+		qglviewer::Vec bbmin, bbmax;
+		bool first;
+		ComplexeCubique<n, k, T> *complexe;
 };
 
 template <int n, int k, typename T>
 Viewer<n, k, T>::Viewer(ComplexeCubique<n, k, T> *cc)
 {
 	quadrics = gluNewQuadric();
-     complexe = cc;
+	complexe = cc;
 }
 
 template <int n, int k, typename T>
 Viewer<n, k, T>::~Viewer()
 {
-     gluDeleteQuadric(quadrics);
+	gluDeleteQuadric(quadrics);
 }
 
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw_sphere(double x, double y, double z, double lg)
 {
-     glColor3f(.5f, 1.f, .5f); // Color of the spheres
+	glColor3f(.5f, 1.f, .5f); // Color of the spheres
 
-     glPushMatrix();
+	glPushMatrix();
 
-     glTranslatef(x, y, z);
-     glutSolidSphere(lg / 2, 16, 16);
+	glTranslatef(x, y, z);
+	glutSolidSphere(lg / 2, 16, 16);
 
-     glPopMatrix();
+	glPopMatrix();
 
-     if (first)
-     {
-          bbmin.x = x - lg / 2;
-          bbmin.y = y - lg / 2;
-          bbmin.z = z - lg / 2;
+	if (first)
+	{
+		bbmin.x = x - lg / 2;
+		bbmin.y = y - lg / 2;
+		bbmin.z = z - lg / 2;
 
-          bbmax.x = x + lg / 2;
-          bbmax.y = y + lg / 2;
-          bbmax.z = z + lg / 2;
+		bbmax.x = x + lg / 2;
+		bbmax.y = y + lg / 2;
+		bbmax.z = z + lg / 2;
 
-          first = false;
-     }
-     else
-     {
-          if (x - lg / 2 < bbmin.x)
-               bbmin.x = x - lg / 2;
-          if (y - lg / 2 < bbmin.y)
-               bbmin.y = y - lg / 2;
-          if (z - lg / 2 < bbmin.z)
-               bbmin.z = z - lg / 2;
+		first = false;
+	}
+	else
+	{
+		if (x - lg / 2 < bbmin.x)
+			bbmin.x = x - lg / 2;
+		if (y - lg / 2 < bbmin.y)
+			bbmin.y = y - lg / 2;
+		if (z - lg / 2 < bbmin.z)
+			bbmin.z = z - lg / 2;
 
-          if (x + lg / 2 > bbmax.x)
-               bbmax.x = x + lg / 2;
-          if (y + lg / 2 > bbmax.y)
-               bbmax.y = y + lg / 2;
-          if (z + lg / 2 > bbmax.z)
-               bbmax.z = z + lg / 2;
-     }
+		if (x + lg / 2 > bbmax.x)
+			bbmax.x = x + lg / 2;
+		if (y + lg / 2 > bbmax.y)
+			bbmax.y = y + lg / 2;
+		if (z + lg / 2 > bbmax.z)
+			bbmax.z = z + lg / 2;
+	}
 }
 
 template <int n, int k, typename T>
@@ -163,72 +160,72 @@ void Viewer<n, k, T>::draw_square(double x, double y, double z, double lg, int d
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw_cube(double x, double y, double z, double lg)
 {
-     glColor3f(1.0f, .5f, .5f);
+	glColor3f(1.0f, .5f, .5f);
 
-     double p = lg / 2;
-     glPushMatrix();
-     glTranslatef(x, y, z);
+	double p = lg / 2;
+	glPushMatrix();
+	glTranslatef(x, y, z);
 
-     glBegin(GL_QUADS);
-     glVertex3f(-p, -p, -p);
-     glVertex3f(+p, -p, -p);
-     glVertex3f(+p, +p, -p);
-     glVertex3f(-p, +p, -p);
+	glBegin(GL_QUADS);
+	glVertex3f(-p, -p, -p);
+	glVertex3f(+p, -p, -p);
+	glVertex3f(+p, +p, -p);
+	glVertex3f(-p, +p, -p);
 
-     glVertex3f(-p, -p, -p);
-     glVertex3f(+p, -p, -p);
-     glVertex3f(+p, -p, +p);
-     glVertex3f(-p, -p, +p);
+	glVertex3f(-p, -p, -p);
+	glVertex3f(+p, -p, -p);
+	glVertex3f(+p, -p, +p);
+	glVertex3f(-p, -p, +p);
 
-     glVertex3f(-p, -p, -p);
-     glVertex3f(-p, -p, +p);
-     glVertex3f(-p, +p, +p);
-     glVertex3f(-p, +p, -p);
+	glVertex3f(-p, -p, -p);
+	glVertex3f(-p, -p, +p);
+	glVertex3f(-p, +p, +p);
+	glVertex3f(-p, +p, -p);
 
-     glVertex3f(+p, +p, +p);
-     glVertex3f(-p, +p, +p);
-     glVertex3f(-p, -p, +p);
-     glVertex3f(+p, -p, +p);
+	glVertex3f(+p, +p, +p);
+	glVertex3f(-p, +p, +p);
+	glVertex3f(-p, -p, +p);
+	glVertex3f(+p, -p, +p);
 
-     glVertex3f(+p, +p, +p);
-     glVertex3f(-p, +p, +p);
-     glVertex3f(-p, +p, -p);
-     glVertex3f(+p, +p, -p);
+	glVertex3f(+p, +p, +p);
+	glVertex3f(-p, +p, +p);
+	glVertex3f(-p, +p, -p);
+	glVertex3f(+p, +p, -p);
 
-     glVertex3f(+p, +p, +p);
-     glVertex3f(+p, +p, -p);
-     glVertex3f(+p, -p, -p);
-     glVertex3f(+p, -p, +p);
-     glEnd();
+	glVertex3f(+p, +p, +p);
+	glVertex3f(+p, +p, -p);
+	glVertex3f(+p, -p, -p);
+	glVertex3f(+p, -p, +p);
+	glEnd();
 
-     glPopMatrix();
+	glPopMatrix();
 }
 
 template <int n, int k, typename T>
 void Viewer<n, k, T>::drawCell(CelluleVirtuelle* cellule)
 {
-     switch(cellule->getDimension())
-     {
-          case 0:
-               draw0Cell(static_cast<Cellule<0>*>(cellule));
-               break;
-          case 1:
-               draw1Cell(static_cast<Cellule<1>*>(cellule));
-               break;
-          case 2:
-               draw2Cell(static_cast<Cellule<2>*>(cellule));
-               break;
-          case 3:
-               draw3Cell(static_cast<Cellule<3>*>(cellule));
-               break;
-     }
+	switch(cellule->getDimension())
+	{
+		case 0:
+			draw0Cell(static_cast<Cellule<0>*>(cellule));
+			break;
+		case 1:
+			draw1Cell(static_cast<Cellule<1>*>(cellule));
+			break;
+		case 2:
+			draw2Cell(static_cast<Cellule<2>*>(cellule));
+			break;
+		case 3:
+			draw3Cell(static_cast<Cellule<3>*>(cellule));
+			break;
+	}
 }
 
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw0Cell(Cellule<0>* cellule)
 {
-     // On peut par exemple choisir de dessiner chaque 0-cellule par une sphère.
-     draw_sphere(cellule->getSommet()[0], cellule->getSommet()[1], cellule->getSommet()[2], .2);
+	// On peut par exemple choisir de dessiner chaque 0-cellule par une sphère.
+	draw_sphere(cellule->getSommet()[0], cellule->getSommet()[1], cellule->getSommet()[2], .2);
 }
 
 template <int n, int k, typename T>
@@ -243,34 +240,29 @@ void Viewer<n, k, T>::draw1Cell(Cellule<1>* cellule)
 	Cellule<0>* c2 = static_cast<Cellule<0>*>((*edges)[1]);
 	Point<k,T> *p1 = &c1->getSommet();
 	Point<k,T> *p2 = &c2->getSommet();
-	double lg = sqrt(
-			pow(((*p2)[0] - (*p1)[0]), 2)
-			+ pow(((*p2)[1] - (*p1)[1]), 2)
-			+ pow(((*p2)[2] - (*p1)[2]), 2)
-			);
-	
+
 	int dir = X;
 
 	if ((*p2)[0] == (*p1)[0] && (*p2)[1] == (*p1)[1]) // axe des profondeurs
 		dir = Z;
 	else if ((*p2)[0] == (*p1)[0]) // axe des ordonnées
-	    dir = Y;
+		dir = Y;
 	else if ((*p2)[1] == (*p1)[1]) // axe des abscisses
-	    dir = X;
+		dir = X;
 
 	draw_cylinder((double)((*p2)[0] - (*p1)[0]) /2 + (*p1)[0],
 			    (double)((*p2)[1] - (*p1)[1]) /2 + (*p1)[1],
 			    (double)((*p2)[2] - (*p1)[2]) /2 + (*p1)[2],
-			    lg, .08, dir);
+			    1, .08, dir);
 }
 
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw2Cell(Cellule<2>* cellule)
 {
-     // On peut par exemple choisir de dessiner chaque 2-cellule par un carré.
-     std::vector<CelluleVirtuelle*>* edges = cellule->getBords();
+	// On peut par exemple choisir de dessiner chaque 2-cellule par un carré.
+	std::vector<CelluleVirtuelle*>* edges = cellule->getBords();
 
-     assert(edges->size() == 4);
+	assert(edges->size() == 4);
 
 	Cellule<1> *edge0 = static_cast<Cellule<1>*>(edges->at(0));
 	std::vector<CelluleVirtuelle*>* edges0 = edge0->getBords();
@@ -342,8 +334,6 @@ void Viewer<n, k, T>::draw2Cell(Cellule<2>* cellule)
 		dir2 = Z;
 	}
 
-	//double lg = sqrt(pow(((*p2)[0] - (*p1)[0]), 2) + pow(((*p2)[1] - (*p1)[1]), 2) + pow(((*p2)[2] - (*p1)[2]), 2));
-
 	draw_square(	(double)((*p2)[0]-(*p1)[0])/2+(*p1)[0],
 				(double)((*p2)[1]-(*p1)[1])/2+(*p1)[1],
 				(double)((*p2)[2]-(*p1)[2])/2+(*p1)[2],
@@ -353,10 +343,10 @@ void Viewer<n, k, T>::draw2Cell(Cellule<2>* cellule)
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw3Cell(Cellule<3>* cellule)
 {
-     // On peut par exemple choisir de dessiner chaque 3-cellule par un cube.
-     std::vector<CelluleVirtuelle*>* edges = cellule->getBords();
+	// On peut par exemple choisir de dessiner chaque 3-cellule par un cube.
+	std::vector<CelluleVirtuelle*>* edges = cellule->getBords();
 
-     assert(edges->size() == 6);
+	assert(edges->size() == 6);
 
 	Cellule<2> *edge0 = static_cast<Cellule<2>*>(edges->at(0));
 	std::vector<CelluleVirtuelle*>* edges0 = edge0->getBords();
@@ -371,7 +361,7 @@ void Viewer<n, k, T>::draw3Cell(Cellule<3>* cellule)
 		{
 			if (std::find((*itFace)->getBords()->begin(),
 					    (*itFace)->getBords()->end(), *itArrete)
-						!= (*itFace)->getBords()->end())
+					!= (*itFace)->getBords()->end())
 				break;
 		}
 		if (itArrete == edges0->end())
@@ -420,44 +410,44 @@ void Viewer<n, k, T>::draw3Cell(Cellule<3>* cellule)
 template <int n, int k, typename T>
 void Viewer<n, k, T>::draw()
 {
-     first = true; // A garder (pour mettre à jour la boundix box d'affichage.
+	first = true; // A garder (pour mettre à jour la boundix box d'affichage.
 
-     for(int i=0; i<=n; i++)
-     {
-         std::vector<CelluleVirtuelle*>::iterator it;
-         for(it = complexe->getCellules(i)->begin(); it != complexe->getCellules(i)->end(); ++it)
-         {
-            drawCell(*it);
-         }
-     }
+	for(int i=0; i<=n; i++)
+	{
+		std::vector<CelluleVirtuelle*>::iterator it;
+		for(it = complexe->getCellules(i)->begin(); it != complexe->getCellules(i)->end(); ++it)
+		{
+			drawCell(*it);
+		}
+	}
 
 	// A garder (pour mettre à jour la bounding box d'affichage.
-     setSceneBoundingBox(bbmin, bbmax);
+	setSceneBoundingBox(bbmin, bbmax);
 }
 
 template <int n, int k, typename T>
 void Viewer<n, k, T>::init()
 {
-     restoreStateFromFile();
+	restoreStateFromFile();
 
-     // Define 'Control+Q' as the new exit shortcut (default was 'Escape')
-     setShortcut(EXIT_VIEWER, Qt::CTRL+Qt::Key_Q);
+	// Define 'Control+Q' as the new exit shortcut (default was 'Escape')
+	setShortcut(EXIT_VIEWER, Qt::CTRL+Qt::Key_Q);
 
-     setKeyDescription(Qt::Key_S, "Simplify the cubical complex");
+	setKeyDescription(Qt::Key_S, "Simplify the cubical complex");
 }
 
 template <int n, int k, typename T>
 void Viewer<n, k, T>::keyPressEvent(QKeyEvent *e)
 {
-     const Qt::KeyboardModifiers modifiers = e->modifiers();
-     bool handled = false;
-     if ((e->key() == Qt::Key_S) && (modifiers == Qt::NoButton))
-     {
-          // Traitement de l'action associé à la touche s
-          handled = true;
+	const Qt::KeyboardModifiers modifiers = e->modifiers();
+	bool handled = false;
+	if ((e->key() == Qt::Key_S) && (modifiers == Qt::NoButton))
+	{
+		// Traitement de l'action associé à la touche s
+		handled = true;
 		while(complexe->simplifier());
-          updateGL();
-     }
+		updateGL();
+	}
 	else if ((e->key() == Qt::Key_S) && (modifiers == Qt::ShiftModifier))
 	{
 		// Traitement de l'action associé à la touche s
@@ -472,29 +462,29 @@ void Viewer<n, k, T>::keyPressEvent(QKeyEvent *e)
 		std::cout << *complexe << std::endl;
 		updateGL();
 	}
-     if (!handled)
-          QGLViewer::keyPressEvent(e);
+	if (!handled)
+		QGLViewer::keyPressEvent(e);
 }
 
 template <int n, int k, typename T>
 QString Viewer<n, k, T>::helpString() const
 {
-     QString text("<h2>S i m p l e V i e w e r</h2>");
-     text += "Use the mouse to move the camera around the object. ";
-     text += "You can respectively revolve around, zoom and translate with the three mouse buttons. ";
-     text += "Left and middle buttons pressed together rotate around the camera view direction axis<br><br>";
-     text += "Pressing <b>Alt</b> and one of the function keys (<b>F1</b>..<b>F12</b>) defines a camera keyFrame. ";
-     text += "Simply press the function key again to restore it. Several keyFrames define a ";
-     text += "camera path. Paths are saved when you quit the application and restored at next start.<br><br>";
-     text += "Press <b>F</b> to display the frame rate, <b>A</b> for the world axis, ";
-     text += "<b>Alt+Return</b> for full screen mode and <b>Control+S</b> to save a snapshot. ";
-     text += "See the <b>Keyboard</b> tab in this window for a complete shortcut list.<br><br>";
-     text += "Double clicks automates single click actions: A left button double click aligns the closer axis with the camera (if close enough). ";
-     text += "A middle button double click fits the zoom of the camera and the right button re-centers the scene.<br><br>";
-     text += "A left button double click while holding right button pressed defines the camera <i>Revolve Around Point</i>. ";
-     text += "See the <b>Mouse</b> tab and the documentation web pages for details.<br><br>";
-     text += "Press <b>Escape</b> to exit the viewer.";
-     return text;
+	QString text("<h2>S i m p l e V i e w e r</h2>");
+	text += "Use the mouse to move the camera around the object. ";
+	text += "You can respectively revolve around, zoom and translate with the three mouse buttons. ";
+	text += "Left and middle buttons pressed together rotate around the camera view direction axis<br><br>";
+	text += "Pressing <b>Alt</b> and one of the function keys (<b>F1</b>..<b>F12</b>) defines a camera keyFrame. ";
+	text += "Simply press the function key again to restore it. Several keyFrames define a ";
+	text += "camera path. Paths are saved when you quit the application and restored at next start.<br><br>";
+	text += "Press <b>F</b> to display the frame rate, <b>A</b> for the world axis, ";
+	text += "<b>Alt+Return</b> for full screen mode and <b>Control+S</b> to save a snapshot. ";
+	text += "See the <b>Keyboard</b> tab in this window for a complete shortcut list.<br><br>";
+	text += "Double clicks automates single click actions: A left button double click aligns the closer axis with the camera (if close enough). ";
+	text += "A middle button double click fits the zoom of the camera and the right button re-centers the scene.<br><br>";
+	text += "A left button double click while holding right button pressed defines the camera <i>Revolve Around Point</i>. ";
+	text += "See the <b>Mouse</b> tab and the documentation web pages for details.<br><br>";
+	text += "Press <b>Escape</b> to exit the viewer.";
+	return text;
 }
 
 #endif
