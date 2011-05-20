@@ -81,7 +81,7 @@ template<int n, int k, typename T>
 void ComplexeCubique<n,k,T>::creerCellule(Point<k,T>* point)
 {
 	Cellule<0>* cellule = new Cellule<0>(*point);
-	ensemblesCellules.find(0)->second->push_back(cellule);
+	ensemblesCellules[0]->push_back(cellule);
 }
 
 template<int n, int k, typename T>
@@ -209,7 +209,7 @@ bool ComplexeCubique<n,k,T>::simplifier()
 template<int n, int k, typename T>
 std::vector<CelluleVirtuelle*>* ComplexeCubique<n,k,T>::getCellules(int dimension)
 {
-	return ensemblesCellules.find(dimension)->second;
+	return ensemblesCellules[dimension];
 }
 
 template<int n, int k, typename T>

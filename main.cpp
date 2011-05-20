@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 		QApplication app(argc, argv);
 		app.setApplicationName("Cubical");
 
-		Viewer<3,3,int> viewer(&complexe);
+		Viewer<DIM_C,DIM_P,int> viewer(&complexe);
 		viewer.show();
 		app.exec();
 	}

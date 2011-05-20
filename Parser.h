@@ -33,10 +33,9 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe, char* nomFichier)
 		if (dim_complex != DIM_C || dim_points != DIM_P)
 		{
 			std::cout << "Dimensions du complexe, des points";
-			std::cout << " ou type des points non concordants :" << std::endl;
-			std::cout << "Vérifiez les valeurs et relancez le programme." << std::endl;
-			std::cout << "Dimension complexe :" << dim_complex << " != " << DIM_C<< std::endl;
-			std::cout << "Dimension points :" << dim_points << " != " << DIM_P << std::endl;
+			std::cout << " ou type des points non concordants." << std::endl;
+			std::cout << "Dimension complexe : " << dim_complex << " != " << DIM_C<< std::endl;
+			std::cout << "Dimension points : " << dim_points << " != " << DIM_P << std::endl;
 			fichier.std::ifstream::~ifstream();
 			exit(EXIT_FAILURE);
 		}
@@ -48,6 +47,7 @@ Parser::Parser(ComplexeCubique<DIM_C,DIM_P,TYPE>& complexe, char* nomFichier)
 		int nb;
 		while (ligne >> nb)
 			nombreCellules.push_back(nb);
+
 		// DIM_C+1 : evite d'avoir du code redondant
 		BoucleParser<0,DIM_C+1> boucle(complexe, fichier, nombreCellules);
 
